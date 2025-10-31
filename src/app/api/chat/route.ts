@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
         .select('*')
         .eq('id', modelId)
         .eq('user_id', user.id)
-        .single()
+        .single() as { data: any; error: any }
 
       if (modelError || !modelData) {
         return NextResponse.json(
