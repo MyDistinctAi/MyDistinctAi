@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #F8F9FA; /* Off-white/Light */
+  --foreground: #1A1A1A; /* Near-black/Dark */
+  --primary: #2ECC71; /* Emerald green */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1A1A1A; /* Near-black/Dark */
+    --foreground: #F8F9FA; /* Off-white/Light */
+    --primary: #2ECC71; /* Emerald green */
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 500; /* Medium for body */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700; /* Bold for headlines */
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

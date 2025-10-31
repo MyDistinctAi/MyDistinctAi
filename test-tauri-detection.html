@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tauri Detection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: green; font-weight: bold; }
+        .error { color: red; font-weight: bold; }
+        .info { color: blue; }
+        pre {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Tauri Detection Test</h1>
+
+    <div class="test-box">
+        <h2>Test 1: Check window.__TAURI__</h2>
+        <p id="test1">Running...</p>
+    </div>
+
+    <div class="test-box">
+        <h2>Test 2: Check __TAURI__ properties</h2>
+        <p id="test2">Running...</p>
+    </div>
+
+    <div class="test-box">
+        <h2>Test 3: Try to invoke a command</h2>
+        <p id="test3">Running...</p>
+    </div>
+
+    <div class="test-box">
+        <h2>Debug Info</h2>
+        <pre id="debug">Loading...</pre>
+    </div>
+
+    <script>
+        // Test 1: Basic Tauri detection
+        const test1 = document.getElementById('test1');
+        if (typeof window !== 'undefined' && '__TAURI__' in window) {
+            test1.innerHTML = '<span class="success">✅ PASS: window.__TAURI__ exists!</span>';
+        } else {
+            test1.innerHTML = '<span class="error">❌ FAIL: window.__TAURI__ not found</span><br><span class="info">This means you\'re running in a web browser, not the desktop app.</span>';
+        }
+
+        // Test 2: Check __TAURI__ properties
+        const test2 = document.getElementById('test2');
+        if (window.__TAURI__) {
+            const props = Object.keys(window.__TAURI__);
+            test2.innerHTML = `<span class="success">✅ PASS: Found ${props.length} properties</span><br><code>${props.join(', ')}</code>`;
+        } else {
+            test2.innerHTML = '<span class="error">❌ SKIP: No __TAURI__ object</span>';
+        }
+
+        // Test 3: Try to invoke
+        const test3 = document.getElementById('test3');
+        if (window.__TAURI__?.core?.invoke) {
+            test3.innerHTML = '<span class="success">✅ PASS: invoke function available</span>';
+
+            // Try calling check_ollama_status
+            window.__TAURI__.core.invoke('check_ollama_status')
+                .then(result => {
+                    test3.innerHTML += `<br><span class="info">Ollama status: ${result}</span>`;
+                })
+                .catch(err => {
+                    test3.innerHTML += `<br><span class="error">Invoke error: ${err}</span>`;
+                });
+        } else {
+            test3.innerHTML = '<span class="error">❌ FAIL: invoke function not available</span>';
+        }
+
+        // Debug info
+        const debug = document.getElementById('debug');
+        debug.textContent = JSON.stringify({
+            userAgent: navigator.userAgent,
+            hasTauri: '__TAURI__' in window,
+            tauriVersion: window.__TAURI__?.version || 'N/A',
+            location: window.location.href,
+            timestamp: new Date().toISOString()
+        }, null, 2);
+    </script>
+</body>
+</html>

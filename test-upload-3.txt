@@ -1,0 +1,9 @@
+This is the third test file - testing after adding the INSERT policy for authenticated users.
+
+The fix applied:
+1. Added RLS policy to allow authenticated users to INSERT into job_queue
+2. Granted EXECUTE permission on enqueue_job function to authenticated users
+
+This should now work without 500 error!
+
+Test timestamp: 2025-10-28 03:58 AM

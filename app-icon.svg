@@ -1,0 +1,38 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#4F46E5"/>
+
+  <!-- AI Brain icon -->
+  <g transform="translate(256, 256)">
+    <!-- Brain outline -->
+    <ellipse cx="0" cy="0" rx="120" ry="140" fill="none" stroke="#FFFFFF" stroke-width="16"/>
+
+    <!-- Neural network nodes -->
+    <circle cx="-60" cy="-40" r="12" fill="#FFFFFF"/>
+    <circle cx="60" cy="-40" r="12" fill="#FFFFFF"/>
+    <circle cx="-80" cy="20" r="12" fill="#FFFFFF"/>
+    <circle cx="80" cy="20" r="12" fill="#FFFFFF"/>
+    <circle cx="-40" cy="60" r="12" fill="#FFFFFF"/>
+    <circle cx="40" cy="60" r="12" fill="#FFFFFF"/>
+    <circle cx="0" cy="-80" r="12" fill="#FFFFFF"/>
+    <circle cx="0" cy="0" r="12" fill="#FFFFFF"/>
+
+    <!-- Neural connections -->
+    <line x1="-60" y1="-40" x2="0" y2="0" stroke="#FFFFFF" stroke-width="4" opacity="0.6"/>
+    <line x1="60" y1="-40" x2="0" y2="0" stroke="#FFFFFF" stroke-width="4" opacity="0.6"/>
+    <line x1="-80" y1="20" x2="0" y2="0" stroke="#FFFFFF" stroke-width="4" opacity="0.6"/>
+    <line x1="80" y1="20" x2="0" y2="0" stroke="#FFFFFF" stroke-width="4" opacity="0.6"/>
+    <line x1="-40" y1="60" x2="0" y2="0" stroke="#FFFFFF" stroke-width="4" opacity="0.6"/>
+    <line x1="40" y1="60" x2="0" y2="0" stroke="#FFFFFF" stroke-width="4" opacity="0.6"/>
+    <line x1="0" y1="-80" x2="0" y2="0" stroke="#FFFFFF" stroke-width="4" opacity="0.6"/>
+
+    <!-- Lock icon (privacy/security) -->
+    <g transform="translate(0, 90)">
+      <rect x="-25" y="0" width="50" height="40" rx="5" fill="#FFFFFF"/>
+      <path d="M -15,-5 Q -15,-20 0,-20 Q 15,-20 15,-5" fill="none" stroke="#FFFFFF" stroke-width="6"/>
+    </g>
+  </g>
+
+  <!-- Text -->
+  <text x="256" y="460" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#FFFFFF">MyDistinctAI</text>
+</svg>

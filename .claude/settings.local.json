@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(node test-ollama-desktop.mjs:*)",
+      "Bash(npm run tauri:dev:*)",
+      "Bash(winget:*)",
+      "Bash(refreshenv)",
+      "Bash(rustc:*)",
+      "Bash(cargo --version:*)",
+      "Bash(set PATH=%USERPROFILE%.cargobin)",
+      "Bash(%PATH%)",
+      "Bash(C:/Users/imoud/.cargo/bin/rustc --version)",
+      "Bash(C:/Users/imoud/.cargo/bin/cargo --version)",
+      "Bash(export PATH=\"/c/Users/imoud/.cargo/bin:$PATH\")",
+      "Bash(where:*)",
+      "Read(//c/Program Files (x86)/Microsoft Visual Studio/2022/BuildTools/VC/Auxiliary/Build//**)",
+      "Bash(cargo clean:*)",
+      "Bash(cmd.exe //c '\"\"\"\"C:\\Program Files (x86)\\Microsoft Visual Studio\\2022\\BuildTools\\VC\\Auxiliary\\Build\\vcvars64.bat\"\"\"\" && set')",
+      "Bash(mkdir:*)",
+      "Bash(npx @tauri-apps/cli icon:*)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(taskkill:*)",
+      "Bash(taskkill /F /PID 16796)",
+      "Bash(tasklist:*)",
+      "Read(//c/Users/imoud/.codeium/windsurf/memories/**)",
+      "Bash(node test-rag-chat.js:*)",
+      "Bash(vercel --version:*)",
+      "Bash(vercel whoami:*)",
+      "Bash(vercel --yes:*)",
+      "Bash(git init:*)",
+      "Bash(git config:*)",
+      "Bash(git add:*)",
+      "Bash(del nul)",
+      "Bash(git commit:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

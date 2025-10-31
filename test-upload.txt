@@ -1,0 +1,9 @@
+This is a test file for testing the job queue file upload system.
+
+The file upload should:
+1. Upload the file to Supabase Storage
+2. Create a training_data record
+3. Enqueue a job for background processing
+4. Process the file asynchronously
+
+This test verifies that the job queue API routes are working correctly.

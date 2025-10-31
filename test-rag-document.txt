@@ -1,0 +1,16 @@
+Test Document for RAG
+
+This is a test document to verify RAG functionality.
+
+Important Information:
+- The secret code is: BLUE-ELEPHANT-42
+- Our office location is: 123 Main Street, San Francisco
+- Contact email: test@example.com
+- Operating hours: Monday to Friday, 9 AM to 5 PM
+
+Product Features:
+1. Feature Alpha: Advanced analytics dashboard
+2. Feature Beta: Real-time collaboration tools
+3. Feature Gamma: AI-powered insights
+
+This information should be retrievable via RAG when the user asks questions.

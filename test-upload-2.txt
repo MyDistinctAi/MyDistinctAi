@@ -1,0 +1,11 @@
+This is the second test file to verify the job queue fix is working.
+
+After applying the migration to Supabase, the enqueue_job function should now work correctly.
+
+This file should:
+1. Upload successfully to Supabase Storage
+2. Create a training_data record
+3. Successfully enqueue a job without 500 error
+4. Show "File processing job enqueued successfully" in console
+
+Test timestamp: 2025-10-28 03:56 AM

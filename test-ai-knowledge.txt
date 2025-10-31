@@ -1,0 +1,61 @@
+MyDistinctAI Project - AI Training Test Document
+
+This document contains specific information to test if the AI can reference uploaded training data.
+
+PROJECT DETAILS:
+- Project Name: MyDistinctAI
+- Type: Privacy-first AI platform
+- Technology Stack: Next.js 16, Supabase, Ollama, LanceDB
+- Server Port: 4000
+- Database: PostgreSQL via Supabase
+
+KEY FEATURES IMPLEMENTED:
+1. Authentication System
+   - Email/password login
+   - Magic link authentication
+   - Xray route for testing (/xray/filetest)
+   - Session management
+
+2. Job Queue System
+   - Database table: job_queue
+   - Functions: enqueue_job, get_next_job, complete_job, fail_job
+   - Worker endpoint: /api/jobs/worker
+   - Background processing via cron job
+   - Status tracking: pending, processing, completed, failed
+
+3. File Upload System
+   - Supports: PDF, DOCX, TXT, MD, CSV
+   - Maximum file size: 10MB
+   - Storage: Supabase Storage
+   - Automatic job enqueueing for processing
+
+4. Chat Interface
+   - Real-time streaming responses
+   - Ollama integration (Mistral 7B model)
+   - RAG (Retrieval Augmented Generation) support
+   - Message history saved to database
+
+SPECIFIC TEST INFORMATION:
+- Test user email: filetest@example.com
+- Test user password: password123456
+- Test model name: Test File Upload Model
+- Test model ID: 353608a6-c981-4dfb-9e75-c70fcdeeba2b
+- Base AI model: mistral:7b
+
+IMPORTANT NUMBERS TO REMEMBER:
+- Dashboard stats show: 1 model, 3 training files, 1 chat session
+- Job queue processes up to 10 jobs per run
+- Worker runs every 60 seconds
+- Session timeout: 7 days
+- Maximum retry attempts for failed jobs: 3
+
+RECENT FIXES:
+1. Fixed dashboard stats to show real counts instead of 0
+2. Fixed onboarding modal persistence issue
+3. Fixed xray route for instant authentication
+4. Fixed Ollama connection (changed mistral-7b to mistral:7b)
+5. Implemented background job worker with PowerShell script
+
+SECRET CODE FOR TESTING: ALPHA-BRAVO-2025
+
+If the AI mentions this secret code, it means it successfully read and understood this training document!
