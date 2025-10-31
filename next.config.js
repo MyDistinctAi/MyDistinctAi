@@ -8,10 +8,15 @@ const nextConfig = {
     // Temporarily ignore TypeScript errors during build
     ignoreBuildErrors: true,
   },
-  // Exclude test files from build
-  pageExtensions: ['tsx', 'ts', 'jsx', 'js'].map(ext => `page.${ext}`).concat(['tsx', 'ts', 'jsx', 'js']),
   experimental: {
-    serverComponentsExternalPackages: ['pdf-parse', 'mammoth'],
+    serverComponentsExternalPackages: ['pdf-parse', 'mammoth', 'papaparse'],
+  },
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      // Don't bundle these packages on the server
+      config.externals = [...(config.externals || []), 'pdf-parse', 'mammoth', 'papaparse']
+    }
+    return config
   },
   images: {
     remotePatterns: [
