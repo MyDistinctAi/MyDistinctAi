@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import './globals.css'
 import { getBranding } from '@/lib/branding/getBranding'
 import { BrandingProvider } from '@/components/BrandingProvider'
+import { BrandingStyles } from '@/components/BrandingStyles'
 
 export async function generateMetadata(): Promise<Metadata> {
   const branding = await getBranding()
@@ -24,20 +25,11 @@ export default async function RootLayout({
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <style
-          id="branding-vars"
-          dangerouslySetInnerHTML={{
-            __html: `
-              :root {
-                --primary-color: ${branding.primaryColor};
-                --secondary-color: ${branding.secondaryColor};
-              }
-            `
-          }}
-        />
-      </head>
       <body suppressHydrationWarning className="antialiased">
+        <BrandingStyles 
+          primaryColor={branding.primaryColor}
+          secondaryColor={branding.secondaryColor}
+        />
         <BrandingProvider branding={branding}>
           {children}
         </BrandingProvider>

@@ -16,10 +16,18 @@ const BASE_URL = 'http://localhost:4000'
 
 test.describe('OpenRouter + RAG Integration', () => {
   test('complete flow: create model, upload data, chat with RAG', async ({ page }) => {
-    // Step 1: Login using xray route
-    console.log('Step 1: Logging in with xray...')
-    await page.goto(`${BASE_URL}/xray/johndoe`)
-    await page.waitForURL(`${BASE_URL}/dashboard`, { timeout: 10000 })
+    // Step 1: Login with real credentials
+    console.log('Step 1: Logging in...')
+    await page.goto(`${BASE_URL}/login`)
+    await page.waitForLoadState('networkidle')
+    
+    // Fill in login form
+    await page.locator('input[type="email"]').fill('mytest@testmail.app')
+    await page.locator('input[type="password"]').fill('password123')
+    await page.locator('button[type="submit"]:has-text("Sign In")').click()
+    
+    // Wait for dashboard
+    await page.waitForURL(`${BASE_URL}/dashboard`, { timeout: 15000 })
     await expect(page.locator('h1:has-text("Welcome back")')).toBeVisible({ timeout: 10000 })
     console.log('✅ Login successful')
 
@@ -173,8 +181,12 @@ This document should be retrieved when asking about OpenRouter or test informati
   })
 
   test('verify OpenRouter models in dropdown', async ({ page }) => {
-    await page.goto(`${BASE_URL}/xray/johndoe`)
-    await page.waitForURL(`${BASE_URL}/dashboard`, { timeout: 10000 })
+    await page.goto(`${BASE_URL}/login`)
+    await page.waitForLoadState('networkidle')
+    await page.locator('input[type="email"]').fill('mytest@testmail.app')
+    await page.locator('input[type="password"]').fill('password123')
+    await page.locator('button[type="submit"]:has-text("Sign In")').click()
+    await page.waitForURL(`${BASE_URL}/dashboard`, { timeout: 15000 })
     
     await page.goto(`${BASE_URL}/dashboard/models`)
     await page.waitForLoadState('networkidle')
@@ -201,8 +213,12 @@ This document should be retrieved when asking about OpenRouter or test informati
   })
 
   test('check AI model settings page', async ({ page }) => {
-    await page.goto(`${BASE_URL}/xray/johndoe`)
-    await page.waitForURL(`${BASE_URL}/dashboard`, { timeout: 10000 })
+    await page.goto(`${BASE_URL}/login`)
+    await page.waitForLoadState('networkidle')
+    await page.locator('input[type="email"]').fill('mytest@testmail.app')
+    await page.locator('input[type="password"]').fill('password123')
+    await page.locator('button[type="submit"]:has-text("Sign In")').click()
+    await page.waitForURL(`${BASE_URL}/dashboard`, { timeout: 15000 })
     
     await page.goto(`${BASE_URL}/dashboard/settings/ai-model`)
     await page.waitForLoadState('networkidle')
