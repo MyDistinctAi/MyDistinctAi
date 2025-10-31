@@ -8,9 +8,10 @@ const nextConfig = {
     // Temporarily ignore TypeScript errors during build
     ignoreBuildErrors: true,
   },
-  eslint: {
-    // Temporarily ignore ESLint errors during build
-    ignoreDuringBuilds: true,
+  // Exclude test files from build
+  pageExtensions: ['tsx', 'ts', 'jsx', 'js'].map(ext => `page.${ext}`).concat(['tsx', 'ts', 'jsx', 'js']),
+  experimental: {
+    serverComponentsExternalPackages: ['pdf-parse', 'mammoth'],
   },
   images: {
     remotePatterns: [
