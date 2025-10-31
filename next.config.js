@@ -8,9 +8,7 @@ const nextConfig = {
     // Temporarily ignore TypeScript errors during build
     ignoreBuildErrors: true,
   },
-  experimental: {
-    serverComponentsExternalPackages: ['pdf-parse', 'mammoth', 'papaparse'],
-  },
+  serverExternalPackages: ['pdf-parse', 'mammoth', 'papaparse'],
   webpack: (config, { isServer }) => {
     if (isServer) {
       // Don't bundle these packages on the server
