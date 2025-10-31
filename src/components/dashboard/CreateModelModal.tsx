@@ -28,10 +28,15 @@ export interface ModelFormData {
 }
 
 const BASE_MODELS = [
-  { value: 'mistral:7b', label: 'Mistral 7B' },
-  { value: 'llama2:7b', label: 'Llama 2 7B' },
-  { value: 'llama2:13b', label: 'Llama 2 13B' },
-  { value: 'phi:2', label: 'Phi-2' },
+  // OpenRouter Models (Cloud - FREE)
+  { value: 'google/gemini-flash-1.5-8b', label: 'Gemini Flash 1.5 8B (FREE - Cloud)' },
+  { value: 'meta-llama/llama-3.3-70b-instruct:free', label: 'Llama 3.3 70B (FREE - Cloud)' },
+  { value: 'qwen/qwen-2.5-72b-instruct:free', label: 'Qwen 2.5 72B (FREE - Cloud)' },
+  // Ollama Models (Local - Desktop Only)
+  { value: 'mistral:7b', label: 'Mistral 7B (Local)' },
+  { value: 'llama2:7b', label: 'Llama 2 7B (Local)' },
+  { value: 'llama2:13b', label: 'Llama 2 13B (Local)' },
+  { value: 'phi:2', label: 'Phi-2 (Local)' },
 ]
 
 const TRAINING_MODES = [
@@ -55,7 +60,7 @@ export default function CreateModelModal({ isOpen, onClose, onSubmit }: CreateMo
   const [formData, setFormData] = useState<ModelFormData>({
     name: '',
     description: '',
-    baseModel: 'mistral:7b',
+    baseModel: 'google/gemini-flash-1.5-8b',
     trainingMode: 'standard',
     personality: '',
     learningRate: 0.0001,
@@ -111,7 +116,7 @@ export default function CreateModelModal({ isOpen, onClose, onSubmit }: CreateMo
       setFormData({
         name: '',
         description: '',
-        baseModel: 'mistral:7b',
+        baseModel: 'google/gemini-flash-1.5-8b',
         trainingMode: 'standard',
         personality: '',
         learningRate: 0.0001,
