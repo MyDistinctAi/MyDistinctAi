@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
         .from('branding_config')
         .select('user_id')
         .eq('domain', brandingData.domain)
-        .single()
+        .single() as { data: { user_id: string } | null }
 
       if (existingDomain && existingDomain.user_id !== userId) {
         return NextResponse.json(
