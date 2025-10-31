@@ -25,14 +25,14 @@ export default function AIModelSettingsPage() {
         const { data: { user } } = await supabase.auth.getUser()
         if (!user) return
 
-        const { data: profile } = await supabase
-          .from('profiles')
+        const { data: userData } = await supabase
+          .from('users')
           .select('preferred_ai_model')
           .eq('id', user.id)
           .single()
 
-        if (profile?.preferred_ai_model) {
-          setSelectedModel(profile.preferred_ai_model)
+        if (userData?.preferred_ai_model) {
+          setSelectedModel(userData.preferred_ai_model)
         } else {
           setSelectedModel(FREE_MODELS.GEMINI_FLASH.id)
         }
@@ -54,7 +54,7 @@ export default function AIModelSettingsPage() {
       if (!user) throw new Error('Not authenticated')
 
       const { error } = await supabase
-        .from('profiles')
+        .from('users')
         .update({ preferred_ai_model: selectedModel })
         .eq('id', user.id)
 

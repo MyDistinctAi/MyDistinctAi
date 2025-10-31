@@ -89,14 +89,14 @@ export async function POST(request: NextRequest) {
 
     if (user) {
       // Get user's preferred AI model
-      const { data: profile } = await supabase
-        .from('profiles')
+      const { data: userData } = await supabase
+        .from('users')
         .select('preferred_ai_model')
         .eq('id', user.id)
         .single() as { data: any }
 
-      if (profile?.preferred_ai_model) {
-        userPreferredModel = profile.preferred_ai_model
+      if (userData?.preferred_ai_model) {
+        userPreferredModel = userData.preferred_ai_model
       }
       console.log(`[Chat API] User preferred model: ${userPreferredModel}`)
 
