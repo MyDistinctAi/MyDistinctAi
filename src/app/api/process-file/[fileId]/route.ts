@@ -13,9 +13,10 @@ export const dynamic = 'force-dynamic'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { fileId: string } }
+  { params }: { params: Promise<{ fileId: string }> }
 ) {
   try {
+    const { fileId } = await params
     const supabase = await createClient()
 
     // Get authenticated user
@@ -27,8 +28,6 @@ export async function POST(
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-
-    const fileId = params.fileId
 
     // Get file metadata from database
     const { data: fileData, error: fileError } = await supabase
@@ -132,9 +131,10 @@ export async function POST(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { fileId: string } }
+  { params }: { params: Promise<{ fileId: string }> }
 ) {
   try {
+    const { fileId } = await params
     const supabase = await createClient()
 
     // Get authenticated user
@@ -146,8 +146,6 @@ export async function GET(
     if (authError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-
-    const fileId = params.fileId
 
     // Get file processing status
     const { data: fileData, error: fileError } = await supabase
