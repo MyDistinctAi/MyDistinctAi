@@ -33,7 +33,12 @@
       "Bash(git config:*)",
       "Bash(git add:*)",
       "Bash(del nul)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git remote add:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(gh auth status:*)",
+      "Bash(git remote set-url origin https://github.com/MyDistinctAI/MyDistinctAi.git)"
     ],
     "deny": [],
     "ask": []
