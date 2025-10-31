@@ -9,13 +9,8 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   serverExternalPackages: ['pdf-parse', 'mammoth', 'papaparse'],
-  webpack: (config, { isServer }) => {
-    if (isServer) {
-      // Don't bundle these packages on the server
-      config.externals = [...(config.externals || []), 'pdf-parse', 'mammoth', 'papaparse']
-    }
-    return config
-  },
+  // Empty turbopack config to silence webpack warning
+  turbopack: {},
   images: {
     remotePatterns: [
       {
