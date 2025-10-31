@@ -665,10 +665,20 @@
 - ✅ Maintain backward compatibility with Ollama (desktop)
 
 ### Testing & Deployment
+- ⏳ Fix xray route for test users (CRITICAL - blocking E2E tests)
 - ⏳ Test all 3 models in chat interface
 - ⏳ Verify streaming works correctly
 - ⏳ Test model switching
+- ⏳ Test RAG system with OpenRouter models
+- ⏳ Verify no mock responses (real AI responses)
 - ⏳ Deploy to Vercel and verify production
+
+### Issues Found (November 1, 2025)
+- ❌ Xray test users don't exist in database
+- ⏳ Need to verify OpenRouter chat (no mock responses)
+- ⏳ Need to test RAG context retrieval with OpenRouter
+- ✅ OpenRouter models added to dropdown
+- ✅ Gemini Flash set as default base model
 
 ---
 
