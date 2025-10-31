@@ -7,7 +7,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Settings, Palette, User, Bell, Key, Shield } from 'lucide-react'
+import { Settings, Palette, User, Bell, Key, Shield, Brain } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
 
@@ -24,6 +24,13 @@ export default async function SettingsPage() {
   }
 
   const settingsSections = [
+    {
+      title: 'AI Model Selection',
+      description: 'Choose your preferred AI model for chat (all models are free!)',
+      icon: Brain,
+      href: '/dashboard/settings/ai-model',
+      available: true,
+    },
     {
       title: 'Privacy & Data Storage',
       description: 'Choose how your data is stored and processed with pricing tiers',

@@ -8,9 +8,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { retrieveContext } from '@/lib/rag-service'
 import { logTokenUsage, checkUsageLimit } from '@/lib/usage-tracking'
+import { generateStreamingChatCompletion } from '@/lib/openrouter/chat'
+import { getDefaultModel } from '@/lib/openrouter/client'
 
-// Ollama API configuration
+// Ollama API configuration (fallback for desktop)
 const OLLAMA_API_URL = process.env.OLLAMA_URL || 'http://localhost:11434'
+const USE_OPENROUTER = !!process.env.OPENROUTER_API_KEY
 
 interface ChatRequest {
   modelId: string
@@ -79,11 +82,24 @@ export async function POST(request: NextRequest) {
       console.log(`[Chat API] Usage check passed - ${usageCheck.usage?.tokensUsed || 0} / ${usageCheck.usage?.monthlyCap || 0} tokens used`)
     }
 
-    // 4. Fetch model config from Supabase (skip DB queries in dev without auth)
+    // 4. Fetch model config and user preferences from Supabase
     let model = null
     let session = null
+    let userPreferredModel = getDefaultModel().id
 
     if (user) {
+      // Get user's preferred AI model
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('preferred_ai_model')
+        .eq('id', user.id)
+        .single() as { data: any }
+
+      if (profile?.preferred_ai_model) {
+        userPreferredModel = profile.preferred_ai_model
+      }
+      console.log(`[Chat API] User preferred model: ${userPreferredModel}`)
+
       const { data: modelData, error: modelError } = await supabase
         .from('models')
         .select('*')
@@ -214,15 +230,101 @@ User question: ${message}
 Answer:`
     }
 
-    // 9. Call Ollama API with streaming
-    const ollamaModel = model.base_model || 'mistral:7b'
+    // 9. Call AI API (OpenRouter or Ollama) with streaming
     const encoder = new TextEncoder()
+    console.log(`[Chat API] Using RAG: ${useRAG && contextText ? 'Yes' : 'No'}`)
+    console.log(`[Chat API] OpenRouter available: ${USE_OPENROUTER}`)
 
+    // Try OpenRouter first if available
+    if (USE_OPENROUTER) {
+      try {
+        console.log(`[Chat API] Using OpenRouter with model: ${userPreferredModel}`)
+        
+        const messages = [
+          {
+            role: 'system' as const,
+            content: contextText 
+              ? `You are a helpful AI assistant. Use the following context from uploaded documents to answer questions. If the context doesn't contain relevant information, use your general knowledge.\n\nContext:\n${contextText}`
+              : 'You are a helpful AI assistant.'
+          },
+          { role: 'user' as const, content: message }
+        ]
+
+        const stream = await generateStreamingChatCompletion({
+          modelId: userPreferredModel,
+          messages,
+          temperature: 0.7,
+          maxTokens: 2000,
+        })
+
+        // Convert OpenAI stream to our format
+        const readableStream = new ReadableStream({
+          async start(controller) {
+            let fullResponse = ''
+            
+            try {
+              for await (const chunk of stream) {
+                const content = chunk.choices[0]?.delta?.content || ''
+                if (content) {
+                  fullResponse += content
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ token: content })}
+
+`))
+                }
+              }
+
+              // Save message to database
+              if (user) {
+                const tokensUsed = Math.ceil(fullResponse.length / 4)
+
+                await supabase
+                  .from('chat_messages')
+                  .insert({
+                    session_id: sessionId,
+                    role: 'assistant',
+                    content: fullResponse,
+                    tokens: tokensUsed,
+                  })
+
+                await logTokenUsage({
+                  userId: user.id,
+                  tokens: tokensUsed,
+                  modelId: modelId,
+                  sessionId: sessionId,
+                  requestType: 'chat',
+                  modelName: userPreferredModel
+                })
+              }
+
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true })}
+
+`))
+              controller.close()
+            } catch (error) {
+              console.error('[Chat API] OpenRouter streaming error:', error)
+              controller.error(error)
+            }
+          }
+        })
+
+        return new Response(readableStream, {
+          headers: {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive',
+          },
+        })
+      } catch (openrouterError) {
+        console.error('[Chat API] OpenRouter failed, falling back to Ollama:', openrouterError)
+        // Fall through to Ollama
+      }
+    }
+
+    // Fallback to Ollama (for desktop or when OpenRouter fails)
+    const ollamaModel = model?.base_model || 'mistral:7b'
     console.log(`[Chat API] Using Ollama model: ${ollamaModel}`)
     console.log(`[Chat API] Ollama URL: ${OLLAMA_API_URL}/api/generate`)
-    console.log(`[Chat API] Using RAG: ${useRAG && contextText ? 'Yes' : 'No'}`)
 
-    // Check if Ollama is running
     let ollamaResponse
     try {
       console.log(`[Chat API] Attempting to connect to Ollama at ${OLLAMA_API_URL}/api/generate`)
