@@ -242,11 +242,14 @@ Answer:`
     const encoder = new TextEncoder()
     console.log(`[Chat API] Using RAG: ${useRAG && contextText ? 'Yes' : 'No'}`)
     console.log(`[Chat API] OpenRouter available: ${USE_OPENROUTER}`)
+    console.log(`[Chat API] OPENROUTER_API_KEY set: ${!!process.env.OPENROUTER_API_KEY}`)
+    console.log(`[Chat API] Model base_model: ${model?.base_model}`)
+    console.log(`[Chat API] Selected model: ${userPreferredModel}`)
 
     // Try OpenRouter first if available
     if (USE_OPENROUTER) {
       try {
-        console.log(`[Chat API] Using OpenRouter with model: ${userPreferredModel}`)
+        console.log(`[Chat API] ✅ Attempting OpenRouter with model: ${userPreferredModel}`)
         
         const messages = [
           {
@@ -323,9 +326,13 @@ Answer:`
           },
         })
       } catch (openrouterError) {
-        console.error('[Chat API] OpenRouter failed, falling back to Ollama:', openrouterError)
+        console.error('[Chat API] ❌ OpenRouter failed:', openrouterError)
+        console.error('[Chat API] Error details:', openrouterError instanceof Error ? openrouterError.message : String(openrouterError))
+        console.error('[Chat API] Falling back to Ollama...')
         // Fall through to Ollama
       }
+    } else {
+      console.log('[Chat API] ⚠️ OpenRouter not available, using Ollama')
     }
 
     // Fallback to Ollama (for desktop or when OpenRouter fails)
