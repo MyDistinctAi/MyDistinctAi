@@ -26,8 +26,20 @@ test.describe('OpenRouter + RAG Integration', () => {
     await page.locator('input[type="password"]').fill('password123')
     await page.locator('button[type="submit"]:has-text("Sign In")').click()
     
-    // Wait for dashboard
-    await page.waitForURL(`${BASE_URL}/dashboard`, { timeout: 15000 })
+    // Wait for dashboard (with or without trailing slash)
+    await page.waitForURL(/\/dashboard\/?$/, { timeout: 15000 })
+    
+    // Close onboarding modal if it appears (may need multiple clicks for multi-step modal)
+    for (let i = 0; i < 5; i++) {
+      const skipButton = page.locator('button:has-text("Skip")').or(page.locator('button:has-text("Close")').or(page.locator('button[aria-label="Close"]')))
+      if (await skipButton.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await skipButton.first().click()
+        await page.waitForTimeout(300)
+      } else {
+        break
+      }
+    }
+    
     await expect(page.locator('h1:has-text("Welcome back")')).toBeVisible({ timeout: 10000 })
     console.log('✅ Login successful')
 
@@ -186,7 +198,18 @@ This document should be retrieved when asking about OpenRouter or test informati
     await page.locator('input[type="email"]').fill('mytest@testmail.app')
     await page.locator('input[type="password"]').fill('password123')
     await page.locator('button[type="submit"]:has-text("Sign In")').click()
-    await page.waitForURL(`${BASE_URL}/dashboard`, { timeout: 15000 })
+    await page.waitForURL(/\/dashboard\/?$/, { timeout: 15000 })
+    
+    // Close onboarding modal if it appears (may need multiple clicks for multi-step modal)
+    for (let i = 0; i < 5; i++) {
+      const skipButton = page.locator('button:has-text("Skip")').or(page.locator('button:has-text("Close")').or(page.locator('button[aria-label="Close"]')))
+      if (await skipButton.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await skipButton.first().click()
+        await page.waitForTimeout(300)
+      } else {
+        break
+      }
+    }
     
     await page.goto(`${BASE_URL}/dashboard/models`)
     await page.waitForLoadState('networkidle')
@@ -218,7 +241,18 @@ This document should be retrieved when asking about OpenRouter or test informati
     await page.locator('input[type="email"]').fill('mytest@testmail.app')
     await page.locator('input[type="password"]').fill('password123')
     await page.locator('button[type="submit"]:has-text("Sign In")').click()
-    await page.waitForURL(`${BASE_URL}/dashboard`, { timeout: 15000 })
+    await page.waitForURL(/\/dashboard\/?$/, { timeout: 15000 })
+    
+    // Close onboarding modal if it appears (may need multiple clicks for multi-step modal)
+    for (let i = 0; i < 5; i++) {
+      const skipButton = page.locator('button:has-text("Skip")').or(page.locator('button:has-text("Close")').or(page.locator('button[aria-label="Close"]')))
+      if (await skipButton.isVisible({ timeout: 1000 }).catch(() => false)) {
+        await skipButton.first().click()
+        await page.waitForTimeout(300)
+      } else {
+        break
+      }
+    }
     
     await page.goto(`${BASE_URL}/dashboard/settings/ai-model`)
     await page.waitForLoadState('networkidle')
