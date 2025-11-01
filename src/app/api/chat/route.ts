@@ -86,6 +86,7 @@ export async function POST(request: NextRequest) {
     let model = null
     let session = null
     let userPreferredModel = getDefaultModel().id
+    let modelBaseModel = null // Track the model's base_model
 
     if (user) {
       // Get user's preferred AI model
@@ -122,6 +123,13 @@ export async function POST(request: NextRequest) {
       }
 
       model = modelData
+      modelBaseModel = modelData.base_model
+      
+      // If model uses OpenRouter base model, use that instead of user preference
+      if (modelBaseModel && (modelBaseModel.includes('google/') || modelBaseModel.includes('meta-llama/') || modelBaseModel.includes('qwen/'))) {
+        userPreferredModel = modelBaseModel
+        console.log(`[Chat API] Using model's base_model: ${modelBaseModel}`)
+      }
 
       // 4. Verify session belongs to user
       const { data: sessionData, error: sessionError } = await supabase

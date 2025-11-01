@@ -3,11 +3,11 @@
 /**
  * Create Model Modal
  *
- * Modal for creating new AI models with form validation
+ * Modal for creating new AI models with form validation and file upload
  */
 
 import { useState } from 'react'
-import { X, ChevronDown, ChevronUp } from 'lucide-react'
+import { X, ChevronDown, ChevronUp, Upload, FileText } from 'lucide-react'
 
 interface CreateModelModalProps {
   isOpen: boolean
@@ -56,6 +56,8 @@ export default function CreateModelModal({ isOpen, onClose, onSubmit }: CreateMo
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<Partial<Record<keyof ModelFormData, string>>>({})
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([])
+  const [uploadStatus, setUploadStatus] = useState<string>('')
 
   const [formData, setFormData] = useState<ModelFormData>({
     name: '',
@@ -274,6 +276,76 @@ export default function CreateModelModal({ isOpen, onClose, onSubmit }: CreateMo
                   </button>
                 ))}
               </div>
+            </div>
+
+            {/* Training Data Upload */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Training Data (Optional)
+              </label>
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+                <input
+                  type="file"
+                  id="file-upload"
+                  multiple
+                  accept=".txt,.pdf,.doc,.docx,.md"
+                  onChange={(e) => {
+                    if (e.target.files) {
+                      setSelectedFiles(Array.from(e.target.files))
+                      setUploadStatus(`${e.target.files.length} file(s) selected`)
+                    }
+                  }}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="file-upload"
+                  className="cursor-pointer flex flex-col items-center"
+                >
+                  <Upload className="h-10 w-10 text-gray-400 mb-2" />
+                  <span className="text-sm text-gray-600 mb-1">
+                    Click to upload or drag and drop
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    PDF, TXT, DOC, DOCX, MD (Max 10MB each)
+                  </span>
+                </label>
+              </div>
+              
+              {/* Selected Files List */}
+              {selectedFiles.length > 0 && (
+                <div className="mt-3 space-y-2">
+                  {selectedFiles.map((file, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-2 bg-blue-50 rounded border border-blue-200"
+                    >
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-blue-600" />
+                        <span className="text-sm text-gray-700">{file.name}</span>
+                        <span className="text-xs text-gray-500">
+                          ({(file.size / 1024).toFixed(1)} KB)
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedFiles(selectedFiles.filter((_, i) => i !== index))
+                        }}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                  <p className="text-xs text-gray-600">
+                    💡 These files will be automatically uploaded to your training data after model creation
+                  </p>
+                </div>
+              )}
+              
+              {uploadStatus && (
+                <p className="mt-2 text-sm text-green-600">{uploadStatus}</p>
+              )}
             </div>
 
             {/* Advanced Options Toggle */}
