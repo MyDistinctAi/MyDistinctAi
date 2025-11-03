@@ -206,21 +206,35 @@ export async function POST(request: NextRequest) {
     let ragMatches: any[] = []
 
     if (useRAG) {
-      console.log(`[Chat API] Retrieving RAG context for model: ${modelId}`)
+      console.log(`[Chat API] 🔍 Retrieving RAG context for model: ${modelId}`)
+      console.log(`[Chat API] Query: "${message}"`)
 
       const retrievalResult = await retrieveContext(message, modelId, {
         topK: 5,
         similarityThreshold: 0.0, // Set to 0.0 for debugging - will return all matches
       })
 
+      console.log(`[Chat API] RAG Result:`, {
+        success: retrievalResult.success,
+        hasContext: !!retrievalResult.context,
+        contextLength: retrievalResult.context?.length || 0,
+        matchCount: retrievalResult.matches?.length || 0,
+        error: retrievalResult.error
+      })
+
       if (retrievalResult.success && retrievalResult.context) {
         contextText = retrievalResult.context
         ragMatches = retrievalResult.matches || []
-        console.log(`[Chat API] Retrieved ${ragMatches.length} context chunks`)
+        console.log(`[Chat API] ✅ Retrieved ${ragMatches.length} context chunks`)
+        console.log(`[Chat API] Context preview:`, contextText.substring(0, 200) + '...')
       } else if (retrievalResult.error) {
-        console.warn(`[Chat API] RAG retrieval warning: ${retrievalResult.error}`)
+        console.warn(`[Chat API] ⚠️ RAG retrieval warning: ${retrievalResult.error}`)
         // Continue without context instead of failing
+      } else {
+        console.warn(`[Chat API] ⚠️ No RAG context retrieved (no error, but no results)`)
       }
+    } else {
+      console.log(`[Chat API] ⚠️ RAG is disabled`)
     }
 
     // 8. Build prompt with context (if available)
