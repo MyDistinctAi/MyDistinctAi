@@ -46,22 +46,9 @@ export async function processTrainingFile(
   const startTime = Date.now()
 
   try {
-    // Step 1: Check Ollama availability
-    const ollamaCheck = await checkOllamaAvailability()
-    if (!ollamaCheck.available) {
-      return {
-        success: false,
-        error: `Ollama is not available: ${ollamaCheck.error}`,
-      }
-    }
-    if (!ollamaCheck.hasModel) {
-      return {
-        success: false,
-        error: `Embedding model not found. Please run: ollama pull nomic-embed-text`,
-      }
-    }
-
-    // Step 2: Extract text from file
+    console.log('[RAG] Processing file:', fileName)
+    
+    // Step 1: Extract text from file
     const extractionResult: ExtractionResult = await extractTextFromURL(fileUrl, fileName, fileType)
 
     if (!extractionResult.success || !extractionResult.text) {
@@ -87,8 +74,9 @@ export async function processTrainingFile(
     }
 
     // Step 4: Generate embeddings for all chunks
+    console.log(`[RAG] Generating embeddings for ${chunks.length} chunks...`)
     const chunkTexts = chunks.map((chunk) => chunk.text)
-    const embeddingsResult = await generateEmbeddings(chunkTexts, 'nomic-embed-text', 10)
+    const embeddingsResult = await generateEmbeddings(chunkTexts, undefined, 10)
 
     if (!embeddingsResult.success || !embeddingsResult.embeddings) {
       return {
@@ -176,28 +164,22 @@ export async function retrieveContext(
     console.log(`[RAG] Model ID: ${modelId}`)
     console.log(`[RAG] Settings: topK=${topK}, threshold=${similarityThreshold}`)
 
-    // Step 1: Generate embedding for the query using our new service
-    const { generateEmbedding: generateOllamaEmbedding, testOllamaConnection } = await import('./embeddings/ollama-embeddings')
+    // Step 1: Generate embedding for the query
+    console.log('[RAG] Generating query embedding...')
+    const embeddingResult = await generateEmbedding(query)
     
-    // Check Ollama connection
-    console.log('[RAG] Testing Ollama connection...')
-    const isConnected = await testOllamaConnection()
-    console.log(`[RAG] Ollama connection result: ${isConnected}`)
-    
-    if (!isConnected) {
-      console.warn('[RAG] ❌ Ollama not available, returning empty context')
+    if (!embeddingResult.success || !embeddingResult.embedding) {
+      console.error('[RAG] ❌ Failed to generate query embedding:', embeddingResult.error)
       return {
-        success: true,
+        success: true, // Don't fail the chat, just return empty context
         context: '',
         matches: [],
+        error: `Failed to generate embedding: ${embeddingResult.error}`,
       }
     }
 
-    console.log('[RAG] ✅ Ollama connected, generating query embedding...')
-
-    // Generate embedding for query
-    const queryEmbedding = await generateOllamaEmbedding(query)
-    console.log(`[RAG] Query embedding generated (${queryEmbedding.length} dimensions)`)
+    const queryEmbedding = embeddingResult.embedding
+    console.log(`[RAG] ✅ Query embedding generated (${queryEmbedding.length} dimensions)`)
 
     // Step 2: Search for similar documents in pgvector
     console.log('[RAG] Searching pgvector for similar documents...')
