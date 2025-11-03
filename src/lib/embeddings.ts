@@ -1,9 +1,13 @@
 /**
  * Embeddings Generation Service
- * Generates vector embeddings using Ollama
+ * Generates vector embeddings using OpenAI/OpenRouter or Ollama (fallback)
  */
 
+import * as OpenAIEmbeddings from './embeddings/openai-embeddings'
+import * as OllamaEmbeddings from './embeddings/ollama-embeddings'
+
 const OLLAMA_API_URL = process.env.NEXT_PUBLIC_OLLAMA_URL || 'http://localhost:11434'
+const USE_OPENAI = !!process.env.OPENROUTER_API_KEY || !!process.env.OPENAI_API_KEY
 
 export interface EmbeddingResult {
   success: boolean
@@ -29,13 +33,28 @@ export interface BatchEmbeddingResult {
 }
 
 /**
- * Generate embedding for a single text using Ollama
+ * Generate embedding for a single text
+ * Uses OpenAI/OpenRouter if available, falls back to Ollama
  */
 export async function generateEmbedding(
   text: string,
-  model: string = 'nomic-embed-text'
+  model?: string
 ): Promise<EmbeddingResult> {
+  console.log(`[Embeddings] Generating embedding using ${USE_OPENAI ? 'OpenAI/OpenRouter' : 'Ollama'}`)
+  
+  // Try OpenAI/OpenRouter first if available
+  if (USE_OPENAI) {
+    try {
+      return await OpenAIEmbeddings.generateEmbedding(text, model)
+    } catch (error) {
+      console.error('[Embeddings] OpenAI failed, falling back to Ollama:', error)
+      // Fall through to Ollama
+    }
+  }
+
+  // Fallback to Ollama
   const startTime = Date.now()
+  const ollamaModel = model || 'nomic-embed-text'
 
   try {
     const response = await fetch(`${OLLAMA_API_URL}/api/embeddings`, {
@@ -44,7 +63,7 @@ export async function generateEmbedding(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model,
+        model: ollamaModel,
         prompt: text,
       }),
     })
@@ -70,7 +89,7 @@ export async function generateEmbedding(
       success: true,
       embedding: data.embedding,
       metadata: {
-        model,
+        model: ollamaModel,
         dimensions: data.embedding.length,
         processingTime: Date.now() - startTime,
       },
@@ -85,13 +104,28 @@ export async function generateEmbedding(
 
 /**
  * Generate embeddings for multiple texts (batch processing)
+ * Uses OpenAI/OpenRouter if available, falls back to Ollama
  */
 export async function generateEmbeddings(
   texts: string[],
-  model: string = 'nomic-embed-text',
+  model?: string,
   batchSize: number = 10
 ): Promise<BatchEmbeddingResult> {
+  console.log(`[Embeddings] Generating ${texts.length} embeddings using ${USE_OPENAI ? 'OpenAI/OpenRouter' : 'Ollama'}`)
+  
+  // Try OpenAI/OpenRouter first if available (supports native batch)
+  if (USE_OPENAI) {
+    try {
+      return await OpenAIEmbeddings.generateEmbeddings(texts, model)
+    } catch (error) {
+      console.error('[Embeddings] OpenAI batch failed, falling back to Ollama:', error)
+      // Fall through to Ollama
+    }
+  }
+
+  // Fallback to Ollama with batch processing
   const startTime = Date.now()
+  const ollamaModel = model || 'nomic-embed-text'
 
   try {
     const embeddings: number[][] = []
@@ -100,7 +134,7 @@ export async function generateEmbeddings(
     for (let i = 0; i < texts.length; i += batchSize) {
       const batch = texts.slice(i, i + batchSize)
 
-      const batchPromises = batch.map((text) => generateEmbedding(text, model))
+      const batchPromises = batch.map((text) => generateEmbedding(text, ollamaModel))
 
       const results = await Promise.all(batchPromises)
 
@@ -136,7 +170,7 @@ export async function generateEmbeddings(
       success: true,
       embeddings,
       metadata: {
-        model,
+        model: ollamaModel,
         dimensions,
         count: embeddings.length,
         totalProcessingTime: Date.now() - startTime,
