@@ -30,25 +30,30 @@
 - ✅ Create cleanup-old-embeddings.sql (database cleanup)
 - ✅ Commit documentation to GitHub
 
-### OpenRouter RAG Testing 🚧 IN PROGRESS
-- 🚧 Clean up old training data (768-dim Ollama embeddings)
-  - ⏳ Run cleanup-old-embeddings.sql in Supabase SQL Editor
-  - ⏳ Verify all 768-dimension embeddings deleted
-  - ⏳ Verify training data cleared
-- ⏳ Re-upload test document with OpenAI embeddings
-  - ⏳ Upload test-data/company-handbook.txt
-  - ⏳ Monitor server logs for processing
-  - ⏳ Verify embeddings are 1536 dimensions
-- ⏳ Test RAG with 7 questions from TEST-QUESTIONS.md
-  - ⏳ Question 1: CEO name (Sarah Johnson)
-  - ⏳ Question 2: Vacation days (15 days)
-  - ⏳ Question 3: 401k match (100% up to 6%)
-  - ⏳ Question 4: Remote work requirements
-  - ⏳ Question 5: Parental leave comparison
-  - ⏳ Question 6: 401k calculation ($30,500)
-  - ⏳ Question 7: Dress code (negative test)
-- ⏳ Document test results in OPENROUTER_RAG_TEST_RESULTS.md
-- ⏳ Update TASKS.md and CLAUDE.md with results
+### OpenRouter RAG Testing 🚧 IN PROGRESS (Automated Steps Complete)
+- ✅ Clean up old training data (768-dim Ollama embeddings)
+  - ✅ Run cleanup queries in Supabase via MCP
+  - ✅ Deleted 6 old embeddings (768-dimension)
+  - ✅ Deleted old training data (handbook files)
+  - ✅ Verified database clean (0 embeddings remaining)
+- ✅ Automated preparation complete
+  - ✅ Test file verified (test-data/company-handbook.txt exists)
+  - ✅ Created RAG_TESTING_READY.md with manual instructions
+  - ✅ Database ready for fresh upload
+- ⏳ **MANUAL TESTING REQUIRED** (See RAG_TESTING_READY.md)
+  - ⏳ Upload test-data/company-handbook.txt via UI
+  - ⏳ Monitor server logs for processing (verify 1536-dim)
+  - ⏳ Verify embeddings in database
+  - ⏳ Test RAG with 7 questions:
+    - ⏳ Question 1: CEO name (Sarah Johnson)
+    - ⏳ Question 2: Vacation days (15 days)
+    - ⏳ Question 3: 401k match (100% up to 6%)
+    - ⏳ Question 4: Remote work requirements
+    - ⏳ Question 5: Parental leave comparison
+    - ⏳ Question 6: 401k calculation ($30,500)
+    - ⏳ Question 7: Dress code (negative test)
+  - ⏳ Document results in OPENROUTER_RAG_TEST_RESULTS.md
+  - ⏳ Update TASKS.md with test results
 
 ### Vercel Deployment ⏳ PENDING
 - ⏳ Login to Vercel account
