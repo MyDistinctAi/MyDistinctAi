@@ -38,6 +38,11 @@ We're excited to inform you that your MyDistinctAI platform is **95% complete** 
   - Model configuration and customization
   - Training progress tracking
 
+
+- **Openai GPT-4 Model** (PENDING)
+  - Please send your OpenAI API key so we can integrate the OpenAI GPT-4 model. We already have a token system for each user.
+
+
 - **File Upload System**
   - Drag-and-drop file upload
   - Support for PDF, DOCX, TXT, MD, CSV
@@ -230,11 +235,6 @@ We're excited to inform you that your MyDistinctAI platform is **95% complete** 
 
 ## 🚀 Post-Delivery Support
 
-### **Included:**
-- 30 days of bug fixes and adjustments
-- Documentation and training materials
-- Deployment assistance
-- Performance monitoring setup
 
 ### **Optional (Additional Services):**
 - Ongoing maintenance and updates
@@ -266,13 +266,6 @@ Development Team
 MyDistinctAI Project
 
 ---
-
-## 📎 Attachments
-
-1. `STRIPE_INTEGRATION_GUIDE.md` - Required information for payment integration
-2. `NEXT_PROMPT.md` - Technical documentation for final testing
-3. `test-data/` - Sample documents for testing RAG system
-
 ---
 
 **Last Updated:** November 3, 2025, 5:00 PM

@@ -174,9 +174,7 @@ Applies to: □ All plans  □ Specific plan: _______
 ## 📤 How to Send This Information
 
 ### **Option 1: Email (Recommended)**
-- Fill out this document
-- Email to: [your-email@example.com]
-- Subject: "MyDistinctAI - Stripe Integration Info"
+- Just send it through Fiverr Chat.
 
 ### **Option 2: Secure Document**
 - Fill out this document
@@ -243,8 +241,7 @@ A: No problem! You can create new prices in Stripe and we'll update the integrat
 
 If you have any questions or need clarification, please reach out:
 
-**Email:** [your-email@example.com]  
-**Phone:** [your-phone]  
+**Email:** bakliarahim@gmail.com
 **Available:** Monday-Friday, 9 AM - 6 PM
 
 ---
