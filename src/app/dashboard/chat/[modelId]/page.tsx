@@ -32,13 +32,16 @@ export default function ChatPage() {
         // Fetch model from API
         const response = await fetch(`/api/models/${modelId}`)
         if (!response.ok) {
-          throw new Error('Failed to load model')
+          const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
+          console.error('Model load failed:', response.status, errorData)
+          throw new Error(`Failed to load model: ${response.status} - ${errorData.error || 'Unknown error'}`)
         }
         const modelData = await response.json()
         setModel(modelData)
       } catch (err) {
-        setError('Failed to load model')
-        console.error(err)
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load model'
+        setError(errorMessage)
+        console.error('Model load error:', err)
       }
     }
 
