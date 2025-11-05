@@ -13,6 +13,8 @@ interface CreateModelModalProps {
   isOpen: boolean
   onClose: () => void
   onSubmit: (data: ModelFormData) => Promise<void>
+  mode?: 'create' | 'edit'
+  initialData?: ModelFormData & { id?: string }
 }
 
 export interface ModelFormData {
@@ -27,17 +29,26 @@ export interface ModelFormData {
   responseLength?: string
 }
 
-const BASE_MODELS = [
-  // OpenRouter Models (Cloud - FREE)
-  { value: 'google/gemini-flash-1.5-8b', label: 'Gemini Flash 1.5 8B (FREE - Cloud)' },
-  { value: 'meta-llama/llama-3.3-70b-instruct:free', label: 'Llama 3.3 70B (FREE - Cloud)' },
-  { value: 'qwen/qwen-2.5-72b-instruct:free', label: 'Qwen 2.5 72B (FREE - Cloud)' },
-  // Ollama Models (Local - Desktop Only)
+// Check if running in Tauri (desktop app)
+const isTauri = typeof window !== 'undefined' && '__TAURI__' in window
+
+// Cloud models (always available)
+const CLOUD_MODELS = [
+  { value: 'google/gemini-flash-1.5-8b', label: 'Gemini Flash 1.5 8B (FREE)' },
+  { value: 'meta-llama/llama-3.3-70b-instruct:free', label: 'Llama 3.3 70B (FREE)' },
+  { value: 'qwen/qwen-2.5-72b-instruct:free', label: 'Qwen 2.5 72B (FREE)' },
+]
+
+// Local models (desktop only)
+const LOCAL_MODELS = [
   { value: 'mistral:7b', label: 'Mistral 7B (Local)' },
   { value: 'llama2:7b', label: 'Llama 2 7B (Local)' },
   { value: 'llama2:13b', label: 'Llama 2 13B (Local)' },
   { value: 'phi:2', label: 'Phi-2 (Local)' },
 ]
+
+// Only show local models in desktop app
+const BASE_MODELS = isTauri ? [...CLOUD_MODELS, ...LOCAL_MODELS] : CLOUD_MODELS
 
 const TRAINING_MODES = [
   { value: 'quick', label: 'Quick', description: 'Fast training, lower accuracy' },
@@ -52,24 +63,32 @@ const PERSONALITY_EXAMPLES = [
   'Creative and expressive',
 ]
 
-export default function CreateModelModal({ isOpen, onClose, onSubmit }: CreateModelModalProps) {
+export default function CreateModelModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  mode = 'create',
+  initialData
+}: CreateModelModalProps) {
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errors, setErrors] = useState<Partial<Record<keyof ModelFormData, string>>>({})
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [uploadStatus, setUploadStatus] = useState<string>('')
 
-  const [formData, setFormData] = useState<ModelFormData>({
-    name: '',
-    description: '',
-    baseModel: 'google/gemini-flash-1.5-8b',
-    trainingMode: 'standard',
-    personality: '',
-    learningRate: 0.0001,
-    maxContextLength: 2048,
-    temperature: 0.7,
-    responseLength: 'medium',
-  })
+  const [formData, setFormData] = useState<ModelFormData>(
+    initialData || {
+      name: '',
+      description: '',
+      baseModel: 'google/gemini-flash-1.5-8b',
+      trainingMode: 'standard',
+      personality: '',
+      learningRate: 0.0001,
+      maxContextLength: 2048,
+      temperature: 0.7,
+      responseLength: 'medium',
+    }
+  )
 
   if (!isOpen) return null
 
@@ -148,7 +167,9 @@ export default function CreateModelModal({ isOpen, onClose, onSubmit }: CreateMo
         <div className="relative w-full max-w-2xl bg-white rounded-lg shadow-xl">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">Create New Model</h2>
+            <h2 className="text-xl font-semibold text-gray-900">
+              {mode === 'edit' ? 'Edit Model' : 'Create New Model'}
+            </h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -456,7 +477,13 @@ export default function CreateModelModal({ isOpen, onClose, onSubmit }: CreateMo
                 disabled={isSubmitting}
                 className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? 'Creating...' : 'Create Model'}
+                {isSubmitting
+                  ? mode === 'edit'
+                    ? 'Updating...'
+                    : 'Creating...'
+                  : mode === 'edit'
+                  ? 'Update Model'
+                  : 'Create Model'}
               </button>
             </div>
           </form>

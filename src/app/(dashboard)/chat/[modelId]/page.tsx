@@ -46,7 +46,10 @@ export default function ChatPage() {
       }
     }
 
-    loadModel()
+    if (modelId) {
+      loadModel()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modelId])
 
   // Load chat sessions
@@ -55,7 +58,7 @@ export default function ChatPage() {
       try {
         // TODO: Fetch sessions from API
         // For now, using mock data
-        setSessions([
+        const mockSessions = [
           {
             id: 'session-1',
             model_id: modelId,
@@ -74,24 +77,21 @@ export default function ChatPage() {
             created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
             updated_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
           },
-        ])
+        ]
+
+        setSessions(mockSessions)
 
         // Set first session as active
-        setActiveSession({
-          id: 'session-1',
-          model_id: modelId,
-          user_id: 'user-123',
-          title: 'Introduction to AI',
-          last_message: 'What is machine learning?',
-          created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          updated_at: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
-        })
+        setActiveSession(mockSessions[0])
       } catch (err) {
         console.error('Failed to load sessions:', err)
       }
     }
 
-    loadSessions()
+    if (modelId) {
+      loadSessions()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modelId])
 
   // Load messages for active session
@@ -123,8 +123,11 @@ export default function ChatPage() {
       }
     }
 
-    loadMessages()
-  }, [activeSession])
+    if (activeSession) {
+      loadMessages()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeSession?.id])
 
   const handleSendMessage = async (content: string) => {
     if (!activeSession) return
