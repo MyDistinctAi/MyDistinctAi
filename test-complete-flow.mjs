@@ -274,31 +274,33 @@ async function step4_TestChat(modelId) {
     return
   }
 
-  // Read streaming response
-  const reader = response.body.getReader()
-  const decoder = new TextDecoder()
+  // Read streaming response (Node.js compatible)
   let fullResponse = ''
+  const decoder = new TextDecoder()
 
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
+  try {
+    // Use async iterator for Node.js streams
+    for await (const chunk of response.body) {
+      const text = decoder.decode(chunk, { stream: true })
+      const lines = text.split('\n').filter(line => line.trim() !== '')
 
-    const chunk = decoder.decode(value)
-    const lines = chunk.split('\n').filter(line => line.trim() !== '')
-
-    for (const line of lines) {
-      if (line.startsWith('data: ')) {
-        try {
-          const data = JSON.parse(line.slice(6))
-          if (data.content) {
-            fullResponse += data.content
-            process.stdout.write(data.content)
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          try {
+            const data = JSON.parse(line.slice(6))
+            if (data.content) {
+              fullResponse += data.content
+              process.stdout.write(data.content)
+            }
+          } catch (e) {
+            // Skip invalid JSON
           }
-        } catch (e) {
-          // Skip invalid JSON
         }
       }
     }
+  } catch (error) {
+    console.error('\n❌ Error reading stream:', error.message)
+    return
   }
 
   console.log('\n' + '-'.repeat(60))
