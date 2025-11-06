@@ -8,8 +8,6 @@
 
 import { useEffect, useRef } from 'react'
 import { User, Bot, Copy, RotateCcw } from 'lucide-react'
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import type { ChatMessage } from '@/types/chat'
 
 interface ChatMessagesProps {
@@ -70,13 +68,9 @@ export default function ChatMessages({
               <Copy className="h-4 w-4" />
             </button>
           </div>
-          <SyntaxHighlighter
-            language={language}
-            style={vscDarkPlus}
-            customStyle={{ margin: 0, borderRadius: 0 }}
-          >
-            {code}
-          </SyntaxHighlighter>
+          <pre className="bg-gray-900 text-gray-100 p-4 overflow-x-auto">
+            <code className={`language-${language}`}>{code}</code>
+          </pre>
         </div>
       )
 
