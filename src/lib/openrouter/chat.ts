@@ -66,15 +66,16 @@ export async function generateStreamingChatCompletion(options: ChatCompletionOpt
   } = options
 
   const client = createOpenRouterClient()
-  const model = modelId ? getModelById(modelId) : getDefaultModel()
+  
+  // Try to get model from FREE_MODELS, otherwise use the modelId directly
+  const model = modelId ? getModelById(modelId) : null
+  const actualModelId = model ? model.id : (modelId || getDefaultModel().id)
 
-  if (!model) {
-    throw new Error(`Model not found: ${modelId}`)
-  }
+  console.log(`[OpenRouter] Using model: ${actualModelId}`)
 
   try {
     const stream = await client.chat.completions.create({
-      model: model.id,
+      model: actualModelId,
       messages,
       temperature,
       max_tokens: maxTokens,
