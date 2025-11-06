@@ -135,7 +135,7 @@ export async function POST(request: NextRequest) {
       console.log(`[Chat API] Model base_model: ${modelBaseModel}`)
 
       // If model uses OpenRouter base model, use that instead of user preference
-      if (modelBaseModel && (modelBaseModel.includes('google/') || modelBaseModel.includes('meta-llama/') || modelBaseModel.includes('qwen/'))) {
+      if (modelBaseModel && (modelBaseModel.includes('deepseek/') || modelBaseModel.includes('nvidia/') || modelBaseModel.includes('qwen/') || modelBaseModel.includes('google/') || modelBaseModel.includes('meta-llama/'))) {
         userPreferredModel = modelBaseModel
         console.log(`[Chat API] ✅ Using model's base_model: ${modelBaseModel}`)
       } else {
