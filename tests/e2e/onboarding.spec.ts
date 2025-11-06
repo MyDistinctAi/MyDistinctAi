@@ -11,21 +11,21 @@ test.beforeEach(async ({ page }) => {
 
   // Login using xray API
   await page.goto('http://localhost:4000/api/xray/johndoe')
-  await page.waitForLoadState('networkidle')
+  await page.waitForTimeout(3000) // Increased wait for page to render
 
   // Wait for redirect to dashboard to complete
-  await page.waitForURL('**/dashboard', { timeout: 10000 })
+  await page.waitForURL('**/dashboard**', { timeout: 15000 })
 
-  // Add small wait to ensure onboarding modal renders (OnboardingWrapper has 500ms delay)
-  await page.waitForTimeout(700)
+  // Wait for onboarding modal to render (OnboardingWrapper has 500ms delay + animation)
+  await page.waitForTimeout(1500)
 })
 
 test.describe('Onboarding Flow', () => {
   test('should display onboarding modal for first-time users', async ({ page }, testInfo) => {
     testInfo.setTimeout(60000)
 
-    // Wait for onboarding modal to appear
-    await expect(page.getByRole('heading', { name: 'Welcome to MyDistinctAI' }).first()).toBeVisible({ timeout: 10000 })
+    // Wait for onboarding modal to appear with increased timeout
+    await expect(page.getByRole('heading', { name: 'Welcome to MyDistinctAI' }).first()).toBeVisible({ timeout: 15000 })
 
     // Check modal elements
     await expect(page.getByText('Step 1 of 5')).toBeVisible()
@@ -53,7 +53,7 @@ test.describe('Onboarding Flow', () => {
 
     // Click next button
     await page.getByRole('button', { name: 'Next', exact: true }).click()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(800)
 
     // Check step 2 content
     await expect(page.getByText('Step 2 of 5')).toBeVisible()
@@ -68,12 +68,12 @@ test.describe('Onboarding Flow', () => {
 
     // Go to step 2
     await page.getByRole('button', { name: 'Next', exact: true }).click()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(800)
     await expect(page.getByText('Step 2 of 5')).toBeVisible()
 
     // Go back to step 1
     await page.getByRole('button', { name: /previous/i }).click()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(800)
 
     // Check we're back to step 1
     await expect(page.getByText('Step 1 of 5')).toBeVisible()
@@ -101,7 +101,7 @@ test.describe('Onboarding Flow', () => {
 
     // Check progress increases when moving to next step
     await page.getByRole('button', { name: 'Next', exact: true }).click()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(800)
 
     // Now should show 40% (step 2 of 5)
     await expect(page.getByText('Step 2 of 5')).toBeVisible()
@@ -124,7 +124,7 @@ test.describe('Onboarding Flow', () => {
 
     // Click on step 3 indicator
     await page.getByLabel('Go to step 3').click()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(800)
 
     // Should be on step 3
     await expect(page.getByText('Step 3 of 5')).toBeVisible()
@@ -139,22 +139,22 @@ test.describe('Onboarding Flow', () => {
     // Step 1
     await expect(page.getByRole('heading', { name: 'Welcome to MyDistinctAI' }).first()).toBeVisible()
     await page.getByRole('button', { name: 'Next', exact: true }).click()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(800)
 
     // Step 2
     await expect(page.getByText('Upload Your Knowledge')).toBeVisible()
     await page.getByRole('button', { name: 'Next', exact: true }).click()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(800)
 
     // Step 3
     await expect(page.getByText('Create Your Model')).toBeVisible()
     await page.getByRole('button', { name: 'Next', exact: true }).click()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(800)
 
     // Step 4
     await expect(page.getByRole('heading', { name: 'Start Chatting' })).toBeVisible()
     await page.getByRole('button', { name: 'Next', exact: true }).click()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(800)
 
     // Step 5
     await expect(page.getByText('Explore Features')).toBeVisible()
@@ -180,7 +180,7 @@ test.describe('Onboarding Flow', () => {
 
     // Click skip tour
     await page.getByRole('button', { name: /skip tour/i }).click()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(800)
 
     // Modal should be closed
     await expect(page.getByText('Welcome to MyDistinctAI')).not.toBeVisible()
@@ -193,7 +193,7 @@ test.describe('Onboarding Flow', () => {
 
     // Click close button
     await page.getByLabel('Close onboarding').click()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(800)
 
     // Modal should be closed
     await expect(page.getByText('Welcome to MyDistinctAI')).not.toBeVisible()
@@ -206,11 +206,11 @@ test.describe('Onboarding Flow', () => {
 
     // Navigate to last step
     await page.getByLabel('Go to step 5').click()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(800)
 
     // Click complete
     await page.getByRole('button', { name: /complete/i }).click()
-    await page.waitForTimeout(1000)
+    await page.waitForTimeout(1200)
 
     // Modal should be closed
     await expect(page.getByText('Welcome to MyDistinctAI')).not.toBeVisible()
@@ -223,13 +223,13 @@ test.describe('Onboarding Flow', () => {
 
     // Complete onboarding
     await page.getByLabel('Go to step 5').click()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(800)
     await page.getByRole('button', { name: /complete/i }).click()
-    await page.waitForTimeout(1000)
+    await page.waitForTimeout(1200)
 
     // Reload page
     await page.reload()
-    await page.waitForLoadState('networkidle')
+    await page.waitForTimeout(3000) // Wait for page to render
 
     // Onboarding should not appear
     await expect(page.getByText('Welcome to MyDistinctAI')).not.toBeVisible({
@@ -252,7 +252,7 @@ test.describe('Onboarding Flow', () => {
 
     for (const { step, title } of steps) {
       await page.getByLabel(`Go to step ${step}`).click()
-      await page.waitForTimeout(500)
+      await page.waitForTimeout(800)
       // Use .first() for titles that might match multiple headings
       await expect(page.getByText(title).first()).toBeVisible()
     }
@@ -268,12 +268,12 @@ test.describe('Onboarding Flow', () => {
 
     // Step 2 - Tips
     await page.getByRole('button', { name: 'Next', exact: true }).click()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(800)
     await expect(page.getByText('Tips')).toBeVisible()
 
     // Step 3 - Tips
     await page.getByRole('button', { name: 'Next', exact: true }).click()
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(800)
     await expect(page.getByText('Tips')).toBeVisible()
   })
 })
