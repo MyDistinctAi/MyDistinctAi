@@ -178,8 +178,8 @@ export default function ChatPage() {
             try {
               const data = JSON.parse(line.slice(6))
 
-              if (data.token) {
-                accumulatedContent += data.token
+              if (data.content) {
+                accumulatedContent += data.content
 
                 // Update AI message with accumulated content
                 setMessages((prev) =>
