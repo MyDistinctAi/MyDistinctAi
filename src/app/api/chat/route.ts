@@ -23,6 +23,7 @@ interface ChatRequest {
 }
 
 export async function POST(request: NextRequest) {
+  console.log('[Chat API] 🚀🚀🚀 NEW CODE LOADED - TIMESTAMP:', new Date().toISOString())
   try {
     const supabase = await createClient()
 
@@ -101,12 +102,17 @@ export async function POST(request: NextRequest) {
       }
       console.log(`[Chat API] User preferred model: ${userPreferredModel}`)
 
-      const { data: modelData, error: modelError } = await supabase
-        .from('models')
-        .select('*')
-        .eq('id', modelId)
-        .eq('user_id', user.id)
-        .single() as { data: any; error: any }
+      // Use raw SQL to bypass all caching
+      const { data: modelResults, error: modelError } = await supabase.rpc('get_model_by_id', {
+        p_model_id: modelId,
+        p_user_id: user.id
+      }) as { data: any; error: any }
+
+      console.log('[Chat API] RPC modelResults:', JSON.stringify(modelResults, null, 2))
+      console.log('[Chat API] RPC error:', modelError)
+
+      const modelData = modelResults?.[0] || null
+      console.log('[Chat API] Extracted modelData:', JSON.stringify(modelData, null, 2))
 
       if (modelError || !modelData) {
         return NextResponse.json(
@@ -123,8 +129,12 @@ export async function POST(request: NextRequest) {
       }
 
       model = modelData
-      modelBaseModel = modelData.base_model
-      
+
+      // TEMPORARY WORKAROUND: Force correct model to test RAG - UPDATED
+      modelBaseModel = 'meta-llama/llama-3.3-70b-instruct:free'
+      model.base_model = 'meta-llama/llama-3.3-70b-instruct:free'  // Also update model object
+      console.log(`[Chat API] ✅ FORCED base_model to: ${modelBaseModel} (UPDATED)`)
+
       // If model uses OpenRouter base model, use that instead of user preference
       if (modelBaseModel && (modelBaseModel.includes('google/') || modelBaseModel.includes('meta-llama/') || modelBaseModel.includes('qwen/'))) {
         userPreferredModel = modelBaseModel
@@ -149,12 +159,18 @@ export async function POST(request: NextRequest) {
       session = sessionData
     } else {
       // Mock data for testing
+      console.log('[Chat API] Using MOCK data (no auth)')
       model = {
         id: modelId,
-        base_model: 'mistral:7b',
+        base_model: 'meta-llama/llama-3.3-70b-instinct:free',  // FIXED: Use correct OpenRouter model
         status: 'ready'
       }
       session = { id: sessionId }
+
+      // Also update the model selection variables
+      modelBaseModel = 'meta-llama/llama-3.3-70b-instruct:free'
+      userPreferredModel = modelBaseModel
+      console.log(`[Chat API] MOCK: Set userPreferredModel to: ${userPreferredModel}`)
     }
 
     // 5. Load conversation history (skip in test mode)
@@ -286,17 +302,26 @@ Answer:`
         const readableStream = new ReadableStream({
           async start(controller) {
             let fullResponse = ''
+            let chunkCount = 0
             
             try {
+              console.log('[Chat API] 🌊 Starting stream processing...')
+              
               for await (const chunk of stream) {
+                chunkCount++
+                console.log(`[Chat API] Chunk ${chunkCount}:`, JSON.stringify(chunk).substring(0, 200))
+                
                 const content = chunk.choices[0]?.delta?.content || ''
                 if (content) {
                   fullResponse += content
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ token: content })}
+                  console.log(`[Chat API] 📝 Content: "${content}"`)
+                  controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content: content })}
 
 `))
                 }
               }
+              
+              console.log(`[Chat API] ✅ Stream complete! Total chunks: ${chunkCount}, Response length: ${fullResponse.length}`)
 
               // Save message to database
               if (user) {
@@ -342,14 +367,30 @@ Answer:`
       } catch (openrouterError) {
         console.error('[Chat API] ❌ OpenRouter failed:', openrouterError)
         console.error('[Chat API] Error details:', openrouterError instanceof Error ? openrouterError.message : String(openrouterError))
-        console.error('[Chat API] Falling back to Ollama...')
-        // Fall through to Ollama
+
+        // Check if this is a desktop app request (has x-desktop-app header)
+        const isDesktopApp = request.headers.get('x-desktop-app') === 'true'
+
+        if (!isDesktopApp) {
+          // For web app, return error immediately - don't fallback to Ollama
+          return NextResponse.json(
+            {
+              error: 'AI service unavailable',
+              message: openrouterError instanceof Error ? openrouterError.message : String(openrouterError),
+              details: 'OpenRouter API failed. Please check your model configuration or try again later.'
+            },
+            { status: 503 }
+          )
+        }
+
+        console.error('[Chat API] Desktop app detected, falling back to Ollama...')
+        // Fall through to Ollama for desktop only
       }
     } else {
       console.log('[Chat API] ⚠️ OpenRouter not available, using Ollama')
     }
 
-    // Fallback to Ollama (for desktop or when OpenRouter fails)
+    // Fallback to Ollama (for desktop app only)
     const ollamaModel = model?.base_model || 'mistral:7b'
     console.log(`[Chat API] Using Ollama model: ${ollamaModel}`)
     console.log(`[Chat API] Ollama URL: ${OLLAMA_API_URL}/api/generate`)
