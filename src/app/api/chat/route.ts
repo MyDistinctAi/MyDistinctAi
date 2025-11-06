@@ -130,11 +130,6 @@ export async function POST(request: NextRequest) {
 
       model = modelData
 
-      // TEMPORARY WORKAROUND: Force correct model to test RAG - UPDATED
-      modelBaseModel = 'meta-llama/llama-3.3-70b-instruct:free'
-      model.base_model = 'meta-llama/llama-3.3-70b-instruct:free'  // Also update model object
-      console.log(`[Chat API] ✅ FORCED base_model to: ${modelBaseModel} (UPDATED)`)
-
       // If model uses OpenRouter base model, use that instead of user preference
       if (modelBaseModel && (modelBaseModel.includes('google/') || modelBaseModel.includes('meta-llama/') || modelBaseModel.includes('qwen/'))) {
         userPreferredModel = modelBaseModel
@@ -162,15 +157,12 @@ export async function POST(request: NextRequest) {
       console.log('[Chat API] Using MOCK data (no auth)')
       model = {
         id: modelId,
-        base_model: 'meta-llama/llama-3.3-70b-instinct:free',  // FIXED: Use correct OpenRouter model
+        base_model: userPreferredModel,  // Use the user's preferred model
         status: 'ready'
       }
       session = { id: sessionId }
-
-      // Also update the model selection variables
-      modelBaseModel = 'meta-llama/llama-3.3-70b-instruct:free'
-      userPreferredModel = modelBaseModel
-      console.log(`[Chat API] MOCK: Set userPreferredModel to: ${userPreferredModel}`)
+      
+      console.log(`[Chat API] MOCK: Using userPreferredModel: ${userPreferredModel}`)
     }
 
     // 5. Load conversation history (skip in test mode)
