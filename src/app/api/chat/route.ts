@@ -159,16 +159,33 @@ export async function POST(request: NextRequest) {
 
       session = sessionData
     } else {
-      // Mock data for testing
+      // Mock data for testing - fetch actual model from database
       console.log('[Chat API] Using MOCK data (no auth)')
-      model = {
-        id: modelId,
-        base_model: userPreferredModel,  // Use the user's preferred model
-        status: 'ready'
-      }
-      session = { id: sessionId }
       
-      console.log(`[Chat API] MOCK: Using userPreferredModel: ${userPreferredModel}`)
+      const { data: modelData, error: modelError } = await supabase
+        .from('models')
+        .select('*')
+        .eq('id', modelId)
+        .single()
+      
+      if (modelError || !modelData) {
+        return NextResponse.json(
+          { error: 'Model not found' },
+          { status: 404 }
+        )
+      }
+      
+      model = modelData
+      modelBaseModel = modelData.base_model
+      console.log(`[Chat API] MOCK: Model base_model: ${modelBaseModel}`)
+      
+      // Use model's base_model if available
+      if (modelBaseModel && (modelBaseModel.includes('deepseek/') || modelBaseModel.includes('nvidia/') || modelBaseModel.includes('qwen/'))) {
+        userPreferredModel = modelBaseModel
+        console.log(`[Chat API] MOCK: Using model's base_model: ${modelBaseModel}`)
+      }
+      
+      session = { id: sessionId }
     }
 
     // 5. Load conversation history (skip in test mode)
