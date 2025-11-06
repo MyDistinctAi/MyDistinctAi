@@ -12,7 +12,7 @@ import { X, ChevronDown, ChevronUp, Upload, FileText } from 'lucide-react'
 interface CreateModelModalProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (data: ModelFormData) => Promise<void>
+  onSubmit: (data: ModelFormData, files?: File[]) => Promise<void>
   mode?: 'create' | 'edit'
   initialData?: ModelFormData & { id?: string }
 }
@@ -130,9 +130,12 @@ export default function CreateModelModal({
     }
 
     setIsSubmitting(true)
+    setUploadStatus('Creating model...')
 
     try {
-      await onSubmit(formData)
+      // Pass both form data and files to parent
+      await onSubmit(formData, selectedFiles)
+      
       // Reset form
       setFormData({
         name: '',
@@ -145,10 +148,13 @@ export default function CreateModelModal({
         temperature: 0.7,
         responseLength: 'medium',
       })
+      setSelectedFiles([])
+      setUploadStatus('')
       onClose()
     } catch (error) {
       console.error('Error creating model:', error)
       setErrors({ name: 'Failed to create model. Please try again.' })
+      setUploadStatus('Failed to create model')
     } finally {
       setIsSubmitting(false)
     }
