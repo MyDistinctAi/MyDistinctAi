@@ -159,18 +159,33 @@ export async function POST(request: NextRequest) {
 
       session = sessionData
     } else {
-      // Mock data for testing - fetch actual model from database
+      // Mock data for testing - use admin client to fetch model without auth
       console.log('[Chat API] Using MOCK data (no auth)')
       
-      const { data: modelData, error: modelError } = await supabase
+      const { createClient: createAdminClient } = await import('@supabase/supabase-js')
+      const adminClient = createAdminClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!,
+        {
+          auth: {
+            autoRefreshToken: false,
+            persistSession: false
+          }
+        }
+      )
+      
+      const { data: modelData, error: modelError } = await adminClient
         .from('models')
         .select('*')
         .eq('id', modelId)
         .single()
       
+      console.log('[Chat API] MOCK: Model query result:', { modelData, modelError })
+      
       if (modelError || !modelData) {
+        console.error('[Chat API] MOCK: Model not found:', modelError)
         return NextResponse.json(
-          { error: 'Model not found' },
+          { error: 'Model not found', details: modelError?.message },
           { status: 404 }
         )
       }
