@@ -57,7 +57,8 @@ export async function storeEmbeddings({
       }
     }
 
-    const supabase = supabaseClient || createClient()
+    // Use admin client by default for embedding storage (bypasses RLS)
+    const supabase = supabaseClient || createAdminClient()
 
     // Prepare data for insertion
     const embeddingsData = chunks.map((chunk, index) => ({
@@ -71,13 +72,36 @@ export async function storeEmbeddings({
       metadata,
     }))
 
+    console.log('[Vector Store] Storing embeddings:', {
+      modelId,
+      trainingDataId,
+      chunkCount: chunks.length,
+      embeddingCount: embeddings.length,
+      firstEmbeddingDimensions: embeddings[0]?.length,
+      usingAdminClient: !supabaseClient
+    })
+
     // Insert embeddings (batch insert)
-    const { error, count } = await supabase
+    const { data, error, count } = await supabase
       .from('document_embeddings')
       .insert(embeddingsData)
       .select('id', { count: 'exact' })
 
+    console.log('[Vector Store] Insert result:', {
+      success: !error,
+      insertedCount: data?.length || count,
+      error: error?.message,
+      errorCode: error?.code,
+      errorDetails: error?.details
+    })
+
     if (error) {
+      console.error('[Vector Store] ❌ Failed to store embeddings:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      })
       return {
         success: false,
         error: `Failed to store embeddings: ${error.message}`,
