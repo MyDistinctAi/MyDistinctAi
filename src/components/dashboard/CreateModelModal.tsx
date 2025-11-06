@@ -34,8 +34,8 @@ const isTauri = typeof window !== 'undefined' && '__TAURI__' in window
 
 // Cloud models (always available)
 const CLOUD_MODELS = [
-  { value: 'google/gemini-flash-1.5-8b', label: 'Gemini Flash 1.5 8B (FREE)' },
-  { value: 'meta-llama/llama-3.3-70b-instruct:free', label: 'Llama 3.3 70B (FREE)' },
+  { value: 'deepseek/deepseek-chat-v3.1:free', label: 'DeepSeek Chat V3.1 (FREE) ⭐' },
+  { value: 'nvidia/nemotron-nano-9b-v2:free', label: 'NVIDIA Nemotron Nano 9B (FREE)' },
   { value: 'qwen/qwen-2.5-72b-instruct:free', label: 'Qwen 2.5 72B (FREE)' },
 ]
 
@@ -80,7 +80,7 @@ export default function CreateModelModal({
     initialData || {
       name: '',
       description: '',
-      baseModel: 'google/gemini-flash-1.5-8b',
+      baseModel: 'deepseek/deepseek-chat-v3.1:free',
       trainingMode: 'standard',
       personality: '',
       learningRate: 0.0001,
@@ -140,7 +140,7 @@ export default function CreateModelModal({
       setFormData({
         name: '',
         description: '',
-        baseModel: 'google/gemini-flash-1.5-8b',
+        baseModel: 'deepseek/deepseek-chat-v3.1:free',
         trainingMode: 'standard',
         personality: '',
         learningRate: 0.0001,
