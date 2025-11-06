@@ -8,8 +8,8 @@
 
 import { useEffect, useRef } from 'react'
 import { User, Bot, Copy, RotateCcw } from 'lucide-react'
-import { Light as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import type { ChatMessage } from '@/types/chat'
 
 interface ChatMessagesProps {
@@ -72,7 +72,7 @@ export default function ChatMessages({
           </div>
           <SyntaxHighlighter
             language={language}
-            style={docco}
+            style={vscDarkPlus}
             customStyle={{ margin: 0, borderRadius: 0 }}
           >
             {code}
