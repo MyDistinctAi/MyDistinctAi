@@ -13,7 +13,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { embedding, modelId, limit = 5, threshold = 0.7 } = await req.json()
+    const { embedding, modelId, limit = 5, threshold = 0.35 } = await req.json()
 
     // Validate input
     if (!embedding || !modelId) {
@@ -23,9 +23,9 @@ Deno.serve(async (req) => {
       )
     }
 
-    if (!Array.isArray(embedding) || embedding.length !== 768) {
+    if (!Array.isArray(embedding) || (embedding.length !== 768 && embedding.length !== 1536)) {
       return new Response(
-        JSON.stringify({ error: 'Embedding must be an array of 768 numbers' }),
+        JSON.stringify({ error: 'Embedding must be an array of 768 or 1536 numbers' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
