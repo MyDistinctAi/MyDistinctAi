@@ -82,7 +82,7 @@ export default function CreateModelModal({
     initialData || {
       name: '',
       description: '',
-      baseModel: 'deepseek/deepseek-chat-v3.1:free',
+      baseModel: 'deepseek/deepseek-chat', // Default to DeepSeek (no :free suffix!)
       trainingMode: 'standard',
       personality: '',
       learningRate: 0.0001,
