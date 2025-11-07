@@ -2258,6 +2258,49 @@ This guide should take you from zero to a production-ready application. Use Clau
 
 ## 📝 Session Summaries
 
+### Session 39 - November 7, 2025
+**Fixed Chat API 503 Error on Vercel Production**
+
+### Problem
+- Chat API returning 503 Service Unavailable error on production
+- Error: "AI service unavailable"
+- OpenRouter API calls failing
+
+### Root Cause
+- Models using `deepseek/deepseek-chat-v3.1:free` 
+- DeepSeek model not included in `FREE_MODELS` list in `src/lib/openrouter/client.ts`
+- `getModelById()` returning `undefined` for DeepSeek
+- OpenRouter API rejecting unrecognized model
+
+### Solution
+- Added DeepSeek Chat V3.1 to FREE_MODELS list:
+  ```typescript
+  DEEPSEEK_CHAT: {
+    id: 'deepseek/deepseek-chat-v3.1:free',
+    name: 'DeepSeek Chat V3.1',
+    provider: 'DeepSeek',
+    contextWindow: 64000,
+    speed: 'Fast',
+    quality: 'Excellent',
+    description: 'Best for coding and technical tasks',
+    free: true,
+  }
+  ```
+
+### Deployment
+- Committed fix: `16e739e`
+- Manually deployed to Vercel production
+- New deployment URL: https://mydistinctai-etk9v35e0-imoujoker9-gmailcoms-projects.vercel.app
+- Production URL: https://mydistinctai-delta.vercel.app
+
+### Status
+✅ Chat API 503 error fixed
+✅ All 4 FREE models now recognized (DeepSeek, Gemini, Llama, Qwen)
+✅ Deployed to production
+✅ Ready for testing
+
+---
+
 ### Session: November 5, 2025 - Desktop App Core Infrastructure Complete
 
 **Duration**: ~2 hours
