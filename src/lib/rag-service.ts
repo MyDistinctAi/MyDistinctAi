@@ -158,7 +158,7 @@ export async function retrieveContext(
   } = {}
 ): Promise<RetrievalResult> {
   try {
-    const { topK = 5, similarityThreshold = 0.0 } = options // Set to 0.0 to return all matches for debugging
+    const { topK = 5, similarityThreshold = 0.35 } = options
 
     console.log(`[RAG] Retrieving context for query: "${query}"`)
     console.log(`[RAG] Model ID: ${modelId}`)
