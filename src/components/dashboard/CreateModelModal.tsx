@@ -33,10 +33,12 @@ export interface ModelFormData {
 const isTauri = typeof window !== 'undefined' && '__TAURI__' in window
 
 // Cloud models (always available)
+// Note: Do NOT use :free suffix - OpenRouter API rejects it
 const CLOUD_MODELS = [
-  { value: 'deepseek/deepseek-chat-v3.1:free', label: 'DeepSeek Chat V3.1 (FREE) ⭐' },
-  { value: 'nvidia/nemotron-nano-9b-v2:free', label: 'NVIDIA Nemotron Nano 9B (FREE)' },
-  { value: 'qwen/qwen-2.5-72b-instruct:free', label: 'Qwen 2.5 72B (FREE)' },
+  { value: 'deepseek/deepseek-chat', label: 'DeepSeek Chat (FREE) ⭐' },
+  { value: 'google/gemini-2.0-flash-exp', label: 'Gemini 2.0 Flash (FREE)' },
+  { value: 'meta-llama/llama-3.3-70b-instruct', label: 'Llama 3.3 70B (FREE)' },
+  { value: 'qwen/qwen-2.5-72b-instruct', label: 'Qwen 2.5 72B (FREE)' },
 ]
 
 // Local models (desktop only)

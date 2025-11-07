@@ -8,6 +8,7 @@
 import OpenAI from 'openai'
 
 // Available free models on OpenRouter
+// Note: Do NOT use :free suffix - OpenRouter API rejects it
 export const FREE_MODELS = {
   DEEPSEEK_CHAT: {
     id: 'deepseek/deepseek-chat',
@@ -20,7 +21,7 @@ export const FREE_MODELS = {
     free: true,
   },
   GEMINI_FLASH: {
-    id: 'google/gemini-2.0-flash-exp:free',
+    id: 'google/gemini-2.0-flash-exp',
     name: 'Gemini 2.0 Flash Experimental',
     provider: 'Google',
     contextWindow: 1000000, // 1M tokens
@@ -30,7 +31,7 @@ export const FREE_MODELS = {
     free: true,
   },
   LLAMA_70B: {
-    id: 'meta-llama/llama-3.3-70b-instruct:free',
+    id: 'meta-llama/llama-3.3-70b-instruct',
     name: 'Llama 3.3 70B Instruct',
     provider: 'Meta',
     contextWindow: 128000, // 128K tokens
@@ -40,7 +41,7 @@ export const FREE_MODELS = {
     free: true,
   },
   QWEN_72B: {
-    id: 'qwen/qwen-2.5-72b-instruct:free',
+    id: 'qwen/qwen-2.5-72b-instruct',
     name: 'Qwen 2.5 72B Instruct',
     provider: 'Qwen',
     contextWindow: 128000, // 128K tokens
