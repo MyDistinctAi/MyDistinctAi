@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
+import { createJobQueueClient, JobType } from '@/lib/job-queue'
 
 export async function POST(request: NextRequest) {
   try {
@@ -129,10 +130,32 @@ export async function POST(request: NextRequest) {
 
     console.log(`✅ File uploaded successfully: ${file.name} (${modelId})`)
 
+    // Enqueue processing job
+    try {
+      const jobQueue = createJobQueueClient()
+      const jobId = await jobQueue.enqueueFileProcessing({
+        trainingDataId: trainingData.id,
+        modelId: modelId,
+        fileUrl: publicUrl,
+        fileName: file.name,
+        fileType: file.type,
+        userId: user.id,
+      })
+      
+      if (jobId) {
+        console.log(`✅ Processing job enqueued: ${jobId} for file: ${trainingData.id}`)
+      } else {
+        console.error('Failed to enqueue processing job - no job ID returned')
+      }
+    } catch (jobError) {
+      console.error('Failed to enqueue processing job:', jobError)
+      // Don't fail the upload, just log the error
+    }
+
     return NextResponse.json({
       success: true,
       file: trainingData,
-      message: 'File uploaded successfully',
+      message: 'File uploaded successfully and queued for processing',
     }, { status: 201 })
 
   } catch (error) {
