@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   // Disable static export - we're running a dev server in Tauri
   // output: process.env.TAURI_BUILD ? 'export' : undefined,
-  trailingSlash: true,
+  // trailingSlash: false, // Disabled to fix API route issues
   typescript: {
     // Temporarily ignore TypeScript errors during build
     ignoreBuildErrors: true,
