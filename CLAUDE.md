@@ -2299,6 +2299,14 @@ This guide should take you from zero to a production-ready application. Use Clau
 ✅ Deployed to production
 ✅ Ready for testing
 
+### Update: Rate Limiting Issue Discovered
+- DeepSeek free model is rate-limited by OpenRouter (429 errors)
+- Switched all 27 models to Gemini Flash (google/gemini-flash-1.5-8b)
+- Updated NEXT_PUBLIC_DEFAULT_AI_MODEL environment variable
+- Redeployed to production (commit 4e9ad42)
+- Gemini Flash benefits: 1M context window, faster, more reliable
+- **Final Status**: ✅ FULLY RESOLVED
+
 ---
 
 ### Session: November 5, 2025 - Desktop App Core Infrastructure Complete
