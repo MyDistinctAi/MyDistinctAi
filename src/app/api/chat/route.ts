@@ -195,7 +195,7 @@ export async function POST(request: NextRequest) {
       console.log(`[Chat API] MOCK: Model base_model: ${modelBaseModel}`)
       
       // Use model's base_model if available
-      if (modelBaseModel && (modelBaseModel.includes('deepseek/') || modelBaseModel.includes('nvidia/') || modelBaseModel.includes('qwen/'))) {
+      if (modelBaseModel && (modelBaseModel.includes('deepseek/') || modelBaseModel.includes('nvidia/') || modelBaseModel.includes('qwen/') || modelBaseModel.includes('google/') || modelBaseModel.includes('meta-llama/'))) {
         userPreferredModel = modelBaseModel
         console.log(`[Chat API] MOCK: Using model's base_model: ${modelBaseModel}`)
       }
