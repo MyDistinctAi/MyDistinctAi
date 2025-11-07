@@ -9,6 +9,16 @@ import OpenAI from 'openai'
 
 // Available free models on OpenRouter
 export const FREE_MODELS = {
+  DEEPSEEK_CHAT: {
+    id: 'deepseek/deepseek-chat-v3.1:free',
+    name: 'DeepSeek Chat V3.1',
+    provider: 'DeepSeek',
+    contextWindow: 64000, // 64K tokens
+    speed: 'Fast',
+    quality: 'Excellent',
+    description: 'Best for coding and technical tasks',
+    free: true,
+  },
   GEMINI_FLASH: {
     id: 'google/gemini-flash-1.5-8b',
     name: 'Gemini Flash 1.5 8B',
