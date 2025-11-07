@@ -132,7 +132,7 @@ export async function searchSimilarDocuments(
   } = {}
 ): Promise<{ success: boolean; matches?: SimilarityMatch[]; error?: string }> {
   try {
-    const { limit = 5, similarityThreshold = 0.7 } = options
+    const { limit = 5, similarityThreshold = 0.35 } = options
 
     const supabase = createClient()
 
