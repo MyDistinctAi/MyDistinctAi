@@ -4,6 +4,9 @@ import { getBranding } from '@/lib/branding/getBranding'
 import { BrandingProvider } from '@/components/BrandingProvider'
 import { BrandingStyles } from '@/components/BrandingStyles'
 
+// Force dynamic rendering for this layout
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata(): Promise<Metadata> {
   const branding = await getBranding()
 
