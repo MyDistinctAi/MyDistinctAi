@@ -105,7 +105,7 @@ async function test1_BasicChat() {
       .insert({
         user_id: TEST_USER_ID,
         name: 'Test Chat Basic',
-        base_model: 'deepseek/deepseek-chat-v3.1:free',
+        base_model: 'deepseek/deepseek-chat',
         status: 'ready',
       })
       .select()
@@ -232,7 +232,7 @@ async function test3_MultipleMessages() {
       .insert({
         user_id: TEST_USER_ID,
         name: 'Test Multi Message',
-        base_model: 'deepseek/deepseek-chat-v3.1:free',
+        base_model: 'deepseek/deepseek-chat',
         status: 'ready',
       })
       .select()
@@ -316,7 +316,7 @@ async function test4_SessionManagement() {
       .insert({
         user_id: TEST_USER_ID,
         name: 'Test Session Mgmt',
-        base_model: 'deepseek/deepseek-chat-v3.1:free',
+        base_model: 'deepseek/deepseek-chat',
         status: 'ready',
       })
       .select()
@@ -434,7 +434,7 @@ async function test5_ErrorHandling() {
       .insert({
         user_id: TEST_USER_ID,
         name: 'Test Error Handling',
-        base_model: 'deepseek/deepseek-chat-v3.1:free',
+        base_model: 'deepseek/deepseek-chat',
         status: 'ready',
       })
       .select()
@@ -477,7 +477,7 @@ async function test6_StreamingPerformance() {
       .insert({
         user_id: TEST_USER_ID,
         name: 'Test Streaming',
-        base_model: 'deepseek/deepseek-chat-v3.1:free',
+        base_model: 'deepseek/deepseek-chat',
         status: 'ready',
       })
       .select()

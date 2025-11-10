@@ -22,17 +22,29 @@ export default async function ChatPage() {
     redirect('/login')
   }
 
-  // Get user's models
-  const { data: models } = await supabase
+  // Get user's models - prioritize models with training data
+  const { data: modelsWithData } = await supabase
     .from('models')
-    .select('id, name, status')
+    .select(`
+      id, 
+      name, 
+      status,
+      document_embeddings(count)
+    `)
     .eq('user_id', user.id)
+    .eq('status', 'ready')
     .order('updated_at', { ascending: false })
-    .limit(1)
 
-  // If user has a ready model, redirect to it
-  if (models && models.length > 0) {
-    redirect(`/dashboard/chat/${models[0].id}`)
+  // Find first model with embeddings (has training data)
+  const modelWithData = modelsWithData?.find((m: any) => 
+    m.document_embeddings && m.document_embeddings.length > 0 && m.document_embeddings[0].count > 0
+  )
+
+  // Redirect to model with data, or fallback to most recent model
+  if (modelWithData) {
+    redirect(`/dashboard/chat/${(modelWithData as any).id}`)
+  } else if (modelsWithData && modelsWithData.length > 0) {
+    redirect(`/dashboard/chat/${(modelsWithData[0] as any).id}`)
   }
 
   // If no models, show a helpful message
