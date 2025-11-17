@@ -40,5 +40,11 @@
       "source": "/api/:path*",
       "destination": "/api/:path*"
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/worker/process-jobs",
+      "schedule": "0 0 * * *"
+    }
   ]
 }
