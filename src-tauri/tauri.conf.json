@@ -5,7 +5,7 @@
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
-    "devUrl": "http://localhost:4000/login",
+    "devUrl": "http://localhost:4000/desktop-app",
     "frontendDist": "../out"
   },
   "app": {
@@ -36,17 +36,37 @@
       "icons/icon.ico"
     ],
     "resources": [],
-    "copyright": "",
+    "copyright": "Copyright © 2025 MyDistinctAI. All rights reserved.",
     "category": "DeveloperTool",
     "shortDescription": "Your private AI studio - offline, encrypted, and trained on you",
-    "longDescription": "MyDistinctAI is a desktop application that lets you build and train custom AI models completely offline. All data stays on your device, encrypted with AES-256.",
+    "longDescription": "MyDistinctAI is a desktop application that lets you build and train custom AI models completely offline. All data stays on your device, encrypted with AES-256. Features include local embeddings generation, RAG capabilities, and support for PDF/DOCX/TXT files.",
+    "externalBin": [],
     "windows": {
       "certificateThumbprint": null,
       "digestAlgorithm": "sha256",
-      "timestampUrl": ""
+      "timestampUrl": "",
+      "wix": {
+        "language": ["en-US"],
+        "template": null
+      },
+      "nsis": null
     },
     "macOS": {
-      "minimumSystemVersion": "10.13"
+      "frameworks": [],
+      "minimumSystemVersion": "10.13",
+      "entitlements": null,
+      "hardenedRuntime": true,
+      "signingIdentity": null
+    },
+    "linux": {
+      "deb": {
+        "depends": [],
+        "files": {}
+      },
+      "appimage": {
+        "bundleMediaFramework": false,
+        "files": {}
+      }
     }
   },
   "plugins": {}

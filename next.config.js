@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Disable static export - we're running a dev server in Tauri
-  // output: process.env.TAURI_BUILD ? 'export' : undefined,
-  // trailingSlash: false, // Disabled to fix API route issues
+  // Enable static export for Tauri builds (desktop app must be fully static)
+  output: process.env.TAURI_BUILD ? 'export' : undefined,
+  trailingSlash: process.env.TAURI_BUILD ? true : false,
   typescript: {
     // Temporarily ignore TypeScript errors during build
     ignoreBuildErrors: true,
@@ -26,13 +26,9 @@ const nextConfig = {
         hostname: '*.supabase.co',
       },
     ],
-    // Unoptimized images for development and Tauri builds
+    // Unoptimized images for Tauri builds (no image optimization server)
     unoptimized: process.env.NODE_ENV === 'development' || process.env.TAURI_BUILD === 'true',
   },
-  // Configure for Tauri static export
-  ...(process.env.TAURI_BUILD && {
-    distDir: 'out',
-  }),
 }
 
 module.exports = nextConfig
