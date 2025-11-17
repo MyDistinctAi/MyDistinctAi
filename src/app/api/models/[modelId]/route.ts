@@ -48,7 +48,26 @@ export async function GET(
       )
     }
 
-    return NextResponse.json(model, { status: 200 })
+    // Fetch document counts and names
+    const { data: docs, count } = await supabase
+      .from('training_data')
+      .select('id, file_name, status, file_size, chunk_count, file_type', { count: 'exact' })
+      .eq('model_id', modelId)
+      .eq('status', 'processed')
+
+    const modelWithDocs = {
+      ...model,
+      documents: docs || [],
+      documentCount: count || 0
+    }
+
+    // Return with cache headers for better performance
+    return NextResponse.json(modelWithDocs, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'private, max-age=10, stale-while-revalidate=30',
+      }
+    })
   } catch (error) {
     console.error('Error fetching model:', error)
     return NextResponse.json(

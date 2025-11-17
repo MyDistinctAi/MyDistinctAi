@@ -3,15 +3,11 @@
  * Orchestrates file processing, embedding generation, and context retrieval
  */
 
-import { extractTextFromURL, type ExtractionResult } from './file-extraction'
+import { extractTextFromURL, extractTextFromPath, type ExtractionResult } from './file-extraction'
 import { chunkText, type TextChunk, getChunkStats } from './text-chunking'
 import { generateEmbedding, generateEmbeddings, checkOllamaAvailability } from './embeddings'
-import {
-  storeEmbeddings,
-  searchSimilarDocuments,
-  getModelEmbeddingStats,
-  type SimilarityMatch,
-} from './vector-store'
+import { searchSimilarDocuments, hybridSearch, storeEmbeddings, type SimilarityMatch } from './vector-store'
+import { contextCache, embeddingCache } from './cache'
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 export interface ProcessFileResult {
@@ -30,6 +26,13 @@ export interface RetrievalResult {
   context?: string
   matches?: SimilarityMatch[]
   error?: string
+  confidence?: number // 0-100, overall confidence score
+  sources?: Array<{
+    fileName: string
+    similarity: number
+    chunkIndex: number
+  }>
+  verified?: boolean // true if answer was verified against sources
 }
 
 /**
@@ -38,7 +41,7 @@ export interface RetrievalResult {
 export async function processTrainingFile(
   trainingDataId: string,
   modelId: string,
-  fileUrl: string,
+  fileUrlOrPath: string,
   fileName: string,
   fileType?: string,
   supabaseClient?: SupabaseClient
@@ -48,8 +51,11 @@ export async function processTrainingFile(
   try {
     console.log('[RAG] Processing file:', fileName)
     
-    // Step 1: Extract text from file
-    const extractionResult: ExtractionResult = await extractTextFromURL(fileUrl, fileName, fileType)
+    // Step 1: Extract text from file (URL or local path)
+    const isUrl = fileUrlOrPath.startsWith('http://') || fileUrlOrPath.startsWith('https://')
+    const extractionResult: ExtractionResult = isUrl
+      ? await extractTextFromURL(fileUrlOrPath, fileName, fileType)
+      : await extractTextFromPath(fileUrlOrPath, fileName, fileType)
 
     if (!extractionResult.success || !extractionResult.text) {
       return {
@@ -158,34 +164,56 @@ export async function retrieveContext(
   } = {}
 ): Promise<RetrievalResult> {
   try {
-    const { topK = 5, similarityThreshold = 0.35 } = options
+    const { topK = 5, similarityThreshold = 0.25 } = options
 
     console.log(`[RAG] Retrieving context for query: "${query}"`)
     console.log(`[RAG] Model ID: ${modelId}`)
     console.log(`[RAG] Settings: topK=${topK}, threshold=${similarityThreshold}`)
 
-    // Step 1: Generate embedding for the query
-    console.log('[RAG] Generating query embedding...')
-    const embeddingResult = await generateEmbedding(query)
-    
-    if (!embeddingResult.success || !embeddingResult.embedding) {
-      console.error('[RAG] ❌ Failed to generate query embedding:', embeddingResult.error)
-      return {
-        success: true, // Don't fail the chat, just return empty context
-        context: '',
-        matches: [],
-        error: `Failed to generate embedding: ${embeddingResult.error}`,
-      }
+    // Check cache first
+    const cacheKey = `${query}:${topK}:${similarityThreshold}`
+    const cached = contextCache.get<RetrievalResult>(cacheKey, modelId)
+    if (cached) {
+      console.log('[RAG] ⚡ Cache hit! Returning cached context')
+      return cached
     }
 
-    const queryEmbedding = embeddingResult.embedding
-    console.log(`[RAG] ✅ Query embedding generated (${queryEmbedding.length} dimensions)`)
+    // Step 1: Generate embedding for the query
+    console.log('[RAG] Generating query embedding...')
+    
+    // Check embedding cache
+    const cachedEmbedding = embeddingCache.get<number[]>(query, modelId)
+    let queryEmbedding: number[]
+    
+    if (cachedEmbedding) {
+      console.log('[RAG] ⚡ Using cached embedding')
+      queryEmbedding = cachedEmbedding
+    } else {
+      const embeddingResult = await generateEmbedding(query)
+    
+      if (!embeddingResult.success || !embeddingResult.embedding) {
+        console.error('[RAG] ❌ Failed to generate query embedding:', embeddingResult.error)
+        return {
+          success: true, // Don't fail the chat, just return empty context
+          context: '',
+          matches: [],
+          error: `Failed to generate embedding: ${embeddingResult.error}`,
+        }
+      }
 
-    // Step 2: Search for similar documents in pgvector
-    console.log('[RAG] Searching pgvector for similar documents...')
-    const searchResult = await searchSimilarDocuments(queryEmbedding, modelId, {
+      queryEmbedding = embeddingResult.embedding
+      console.log(`[RAG] ✅ Query embedding generated (${queryEmbedding.length} dimensions)`)
+      
+      // Cache the embedding for future use (24 hour TTL)
+      embeddingCache.set(query, modelId, queryEmbedding, 24 * 60 * 60 * 1000)
+    }
+
+    // Step 2: Hybrid search (semantic + keyword)
+    console.log('[RAG] Performing hybrid search (semantic + keyword)...')
+    const searchResult = await hybridSearch(query, queryEmbedding, modelId, {
       limit: topK,
       similarityThreshold,
+      keywordWeight: 0.3 // 30% keyword, 70% semantic
     })
 
     if (!searchResult.success) {
@@ -214,18 +242,35 @@ export async function retrieveContext(
       console.log(`[RAG]   Match ${i + 1}: ${(match.similarity * 100).toFixed(1)}% - "${match.chunk_text.substring(0, 80)}..."`)
     })
 
-    // Build context string from matched chunks
+    // Calculate confidence score (average of top matches weighted by similarity)
+    const confidenceScore = calculateConfidenceScore(matches)
+    console.log(`[RAG] 📊 Confidence score: ${confidenceScore.toFixed(1)}%`)
+
+    // Extract unique sources
+    const sources = extractSources(matches)
+    console.log(`[RAG] 📚 Sources: ${sources.map(s => s.fileName).join(', ')}`)
+
+    // Build context string from matched chunks with document names
     const contextParts = matches.map((match, index) => {
-      return `[Context ${index + 1}] (Similarity: ${(match.similarity * 100).toFixed(1)}%)\n${match.chunk_text}`
+      const docName = match.metadata?.fileName || 'Unknown Document'
+      return `[Source: ${docName}] (Confidence: ${(match.similarity * 100).toFixed(1)}%)\n${match.chunk_text}`
     })
 
     const context = contextParts.join('\n\n---\n\n')
 
-    return {
+    const result: RetrievalResult = {
       success: true,
       context,
       matches,
+      confidence: confidenceScore,
+      sources,
+      verified: confidenceScore >= 70, // Mark as verified if confidence >= 70%
     }
+
+    // Cache the result (1 hour TTL)
+    contextCache.set(cacheKey, modelId, result, 60 * 60 * 1000)
+
+    return result
   } catch (error) {
     console.error('[RAG] Error retrieving context:', error)
     // Don't fail the chat, just return empty context
@@ -363,4 +408,52 @@ export async function getRAGStatus(modelId: string): Promise<{
     stats: statsResult.stats,
     issues,
   }
+}
+
+/**
+ * Calculate confidence score from similarity matches
+ * Uses weighted average based on similarity scores
+ */
+function calculateConfidenceScore(matches: SimilarityMatch[]): number {
+  if (matches.length === 0) return 0
+
+  // Weight top matches more heavily
+  const weights = matches.map((_, i) => 1 / (i + 1))
+  const totalWeight = weights.reduce((sum, w) => sum + w, 0)
+
+  const weightedSum = matches.reduce((sum, match, i) => {
+    return sum + match.similarity * weights[i] * 100
+  }, 0)
+
+  return Math.min(100, weightedSum / totalWeight)
+}
+
+/**
+ * Extract unique sources from matches
+ */
+function extractSources(matches: SimilarityMatch[]): Array<{
+  fileName: string
+  similarity: number
+  chunkIndex: number
+}> {
+  const sourceMap = new Map<
+    string,
+    { fileName: string; similarity: number; chunkIndex: number }
+  >()
+
+  matches.forEach((match) => {
+    const fileName = match.metadata?.fileName || 'Unknown Document'
+    const existing = sourceMap.get(fileName)
+
+    // Keep the highest similarity score for each document
+    if (!existing || match.similarity > existing.similarity) {
+      sourceMap.set(fileName, {
+        fileName,
+        similarity: match.similarity,
+        chunkIndex: match.chunk_index || 0,
+      })
+    }
+  })
+
+  return Array.from(sourceMap.values()).sort((a, b) => b.similarity - a.similarity)
 }

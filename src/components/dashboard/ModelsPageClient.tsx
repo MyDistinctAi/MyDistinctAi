@@ -10,9 +10,16 @@
 import { useState, useMemo } from 'react'
 import { Plus, Trash2 } from 'lucide-react'
 import Link from 'next/link'
-import CreateModelModal, { type ModelFormData } from './CreateModelModal'
-import DeleteConfirmDialog from './DeleteConfirmDialog'
-import TrainingProgress from './TrainingProgress'
+import dynamic from 'next/dynamic'
+import { type ModelFormData } from './CreateModelModal'
+import { DocumentCount } from '@/components/DocumentList'
+
+// Dynamically import heavy components to reduce initial bundle size
+const CreateModelModal = dynamic(() => import('./CreateModelModal'), {
+  loading: () => <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div></div>
+})
+const DeleteConfirmDialog = dynamic(() => import('./DeleteConfirmDialog'))
+const TrainingProgress = dynamic(() => import('./TrainingProgress'))
 
 interface ModelsPageClientProps {
   initialModels: any[]
@@ -29,6 +36,11 @@ export default function ModelsPageClient({ initialModels }: ModelsPageClientProp
   const [modelToDelete, setModelToDelete] = useState<any>(null)
   const [isDeleting, setIsDeleting] = useState(false)
 
+  // Bulk delete state
+  const [selectedModels, setSelectedModels] = useState<Set<string>>(new Set())
+  const [bulkDeleteDialogOpen, setBulkDeleteDialogOpen] = useState(false)
+  const [isBulkDeleting, setIsBulkDeleting] = useState(false)
+
   // Models and training states
   const [models, setModels] = useState(initialModels)
   const [trainingModelId, setTrainingModelId] = useState<string | null>(null)
@@ -37,6 +49,10 @@ export default function ModelsPageClient({ initialModels }: ModelsPageClientProp
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [sortBy, setSortBy] = useState('date')
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1)
+  const ITEMS_PER_PAGE = 20
 
   // Filtered and sorted models
   const filteredModels = useMemo(() => {
@@ -73,9 +89,27 @@ export default function ModelsPageClient({ initialModels }: ModelsPageClientProp
     return filtered
   }, [models, searchQuery, statusFilter, sortBy])
 
-  const handleCreateModel = async (data: ModelFormData, files?: File[]) => {
+  // Paginated models
+  const paginatedModels = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+    const endIndex = startIndex + ITEMS_PER_PAGE
+    return filteredModels.slice(startIndex, endIndex)
+  }, [filteredModels, currentPage, ITEMS_PER_PAGE])
+
+  // Pagination info
+  const totalPages = Math.ceil(filteredModels.length / ITEMS_PER_PAGE)
+  const hasNextPage = currentPage < totalPages
+  const hasPrevPage = currentPage > 1
+
+  // Reset to page 1 when filters change
+  useMemo(() => {
+    setCurrentPage(1)
+  }, [searchQuery, statusFilter, sortBy])
+
+  const handleCreateModel = async (data: ModelFormData, files?: File[], onProgress?: (status: string) => void) => {
     try {
       // Send to API to create model in Supabase
+      onProgress?.('Creating model...')
       const response = await fetch('/api/models', {
         method: 'POST',
         headers: {
@@ -97,7 +131,10 @@ export default function ModelsPageClient({ initialModels }: ModelsPageClientProp
       if (files && files.length > 0) {
         console.log(`Uploading ${files.length} training files for model ${newModel.id}`)
         
-        for (const file of files) {
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i]
+          onProgress?.(`Processing file ${i + 1}/${files.length}: ${file.name}...`)
+          
           const formData = new FormData()
           formData.append('file', file)
           formData.append('modelId', newModel.id)
@@ -110,17 +147,34 @@ export default function ModelsPageClient({ initialModels }: ModelsPageClientProp
 
             if (!uploadResponse.ok) {
               console.error(`Failed to upload ${file.name}`)
+              onProgress?.(`❌ Failed to process ${file.name}`)
             } else {
-              console.log(`✅ Uploaded ${file.name}`)
+              const result = await uploadResponse.json()
+              console.log(`✅ Uploaded and processed ${file.name}`, result)
+              onProgress?.(`✅ Processed ${file.name} (${result.file?.stats?.embeddings || 0} embeddings)`)
             }
           } catch (uploadError) {
             console.error(`Error uploading ${file.name}:`, uploadError)
+            onProgress?.(`❌ Error processing ${file.name}`)
           }
+        }
+        
+        onProgress?.(`✅ All files processed successfully!`)
+
+        // Refresh the model to get updated document count
+        onProgress?.('Refreshing model data...')
+        const refreshResponse = await fetch(`/api/models/${newModel.id}`)
+        if (refreshResponse.ok) {
+          const updatedModel = await refreshResponse.json()
+          setModels((prev) => prev.map(m => m.id === updatedModel.id ? updatedModel : m))
+          console.log(`✅ Model refreshed with ${updatedModel.document_count || 0} documents`)
         }
       }
 
-      // Close modal
-      setIsModalOpen(false)
+      // Close modal after a brief delay to show success message
+      setTimeout(() => {
+        setIsModalOpen(false)
+      }, 1500)
 
       // Show training progress if model status is 'training'
       if (newModel.status === 'training') {
@@ -191,6 +245,60 @@ export default function ModelsPageClient({ initialModels }: ModelsPageClientProp
     }
   }
 
+  const handleBulkDelete = async () => {
+    if (selectedModels.size === 0) return
+
+    setIsBulkDeleting(true)
+    try {
+      const deletePromises = Array.from(selectedModels).map(modelId =>
+        fetch(`/api/models/${modelId}`, { method: 'DELETE' })
+      )
+
+      const results = await Promise.allSettled(deletePromises)
+
+      const failedCount = results.filter(r => r.status === 'rejected').length
+      const successCount = results.filter(r => r.status === 'fulfilled').length
+
+      // Remove successfully deleted models from the list
+      setModels((prev) => prev.filter((model) => !selectedModels.has(model.id)))
+
+      // Clear selection
+      setSelectedModels(new Set())
+
+      // Close dialog
+      setBulkDeleteDialogOpen(false)
+
+      if (failedCount > 0) {
+        alert(`Deleted ${successCount} models. ${failedCount} failed to delete.`)
+      }
+    } catch (error) {
+      console.error('Error bulk deleting models:', error)
+      alert('Failed to delete models. Please try again.')
+    } finally {
+      setIsBulkDeleting(false)
+    }
+  }
+
+  const toggleModelSelection = (modelId: string) => {
+    setSelectedModels(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(modelId)) {
+        newSet.delete(modelId)
+      } else {
+        newSet.add(modelId)
+      }
+      return newSet
+    })
+  }
+
+  const toggleSelectAll = () => {
+    if (selectedModels.size === paginatedModels.length) {
+      setSelectedModels(new Set())
+    } else {
+      setSelectedModels(new Set(paginatedModels.map(m => m.id)))
+    }
+  }
+
   const openEditModal = (model: any) => {
     setEditingModel(model)
     setModalMode('edit')
@@ -240,22 +348,46 @@ export default function ModelsPageClient({ initialModels }: ModelsPageClientProp
               Manage your custom AI models and training data
             </p>
           </div>
-          <button
-            onClick={() => {
-              setModalMode('create')
-              setEditingModel(null)
-              setIsModalOpen(true)
-            }}
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-          >
-            <Plus className="h-5 w-5 mr-2" />
-            Create New Model
-          </button>
+          <div className="flex gap-2">
+            {selectedModels.size > 0 && (
+              <button
+                onClick={() => setBulkDeleteDialogOpen(true)}
+                className="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+              >
+                <Trash2 className="h-5 w-5 mr-2" />
+                Delete Selected ({selectedModels.size})
+              </button>
+            )}
+            <button
+              onClick={() => {
+                setModalMode('create')
+                setEditingModel(null)
+                setIsModalOpen(true)
+              }}
+              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+            >
+              <Plus className="h-5 w-5 mr-2" />
+              Create New Model
+            </button>
+          </div>
         </div>
 
         {/* Filter and Search */}
         <div className="bg-white shadow rounded-lg p-4">
           <div className="flex flex-col sm:flex-row gap-4">
+            {paginatedModels.length > 0 && (
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={selectedModels.size === paginatedModels.length && paginatedModels.length > 0}
+                  onChange={toggleSelectAll}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+                />
+                <label className="text-sm text-gray-700 whitespace-nowrap">
+                  Select All
+                </label>
+              </div>
+            )}
             <div className="flex-1">
               <input
                 type="search"
@@ -330,18 +462,51 @@ export default function ModelsPageClient({ initialModels }: ModelsPageClientProp
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredModels.map((model) => (
+            {paginatedModels.map((model) => (
               <div
                 key={model.id}
-                className="bg-white shadow rounded-lg p-6 hover:shadow-md transition-shadow"
+                className="bg-white shadow rounded-lg p-6 hover:shadow-md transition-shadow relative"
               >
-                <div className="flex items-start justify-between">
+                {/* Checkbox for bulk selection */}
+                <div className="absolute top-4 left-4">
+                  <input
+                    type="checkbox"
+                    checked={selectedModels.has(model.id)}
+                    onChange={() => toggleModelSelection(model.id)}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+                  />
+                </div>
+                <div className="flex items-start justify-between pl-8">
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-gray-900">{model.name}</h3>
                     <p className="text-sm text-gray-500 mt-1">{model.description}</p>
                     <p className="text-xs text-gray-400 mt-2">
                       AI Model: {model.base_model}
                     </p>
+
+                    {/* Document Count Badge */}
+                    {model.documentCount > 0 && (
+                      <div className="mt-2">
+                        <DocumentCount count={model.documentCount} />
+                      </div>
+                    )}
+
+                    {/* Document Names (truncated) */}
+                    {model.documents && model.documents.length > 0 && (
+                      <div className="mt-2 text-xs text-gray-500 space-y-1">
+                        {model.documents.slice(0, 2).map((doc: any) => (
+                          <div key={doc.id} className="truncate flex items-center">
+                            <span className="text-gray-400 mr-1">•</span>
+                            <span>{doc.file_name}</span>
+                          </div>
+                        ))}
+                        {model.documents.length > 2 && (
+                          <div className="text-gray-400 italic">
+                            +{model.documents.length - 2} more
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -399,6 +564,91 @@ export default function ModelsPageClient({ initialModels }: ModelsPageClientProp
             ))}
           </div>
         )}
+
+        {/* Pagination Controls */}
+        {filteredModels.length > ITEMS_PER_PAGE && (
+          <div className="mt-8 flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6 rounded-lg shadow">
+            <div className="flex flex-1 justify-between sm:hidden">
+              <button
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={!hasPrevPage}
+                className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium ${
+                  hasPrevPage
+                    ? 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                Previous
+              </button>
+              <button
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={!hasNextPage}
+                className={`relative ml-3 inline-flex items-center rounded-md px-4 py-2 text-sm font-medium ${
+                  hasNextPage
+                    ? 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                }`}
+              >
+                Next
+              </button>
+            </div>
+            <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm text-gray-700">
+                  Showing{' '}
+                  <span className="font-medium">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span>
+                  {' '}-{' '}
+                  <span className="font-medium">
+                    {Math.min(currentPage * ITEMS_PER_PAGE, filteredModels.length)}
+                  </span>
+                  {' '}of{' '}
+                  <span className="font-medium">{filteredModels.length}</span> models
+                </p>
+              </div>
+              <div>
+                <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                  <button
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={!hasPrevPage}
+                    className={`relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 ${
+                      hasPrevPage ? 'hover:bg-gray-50 cursor-pointer' : 'cursor-not-allowed opacity-50'
+                    }`}
+                  >
+                    <span className="sr-only">Previous</span>
+                    <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`relative inline-flex items-center px-4 py-2 text-sm font-semibold ${
+                        currentPage === page
+                          ? 'z-10 bg-blue-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
+                          : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    disabled={!hasNextPage}
+                    className={`relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 ${
+                      hasNextPage ? 'hover:bg-gray-50 cursor-pointer' : 'cursor-not-allowed opacity-50'
+                    }`}
+                  >
+                    <span className="sr-only">Next</span>
+                    <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </nav>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Create/Edit Model Modal */}
@@ -422,6 +672,17 @@ export default function ModelsPageClient({ initialModels }: ModelsPageClientProp
         description="Are you sure you want to delete this model? This will also delete all associated training data, embeddings, and chat sessions. This action cannot be undone."
         itemName={modelToDelete?.name}
         isDeleting={isDeleting}
+      />
+
+      {/* Bulk Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        isOpen={bulkDeleteDialogOpen}
+        onClose={() => setBulkDeleteDialogOpen(false)}
+        onConfirm={handleBulkDelete}
+        title="Delete Multiple Models"
+        description={`Are you sure you want to delete ${selectedModels.size} selected model${selectedModels.size !== 1 ? 's' : ''}? This will also delete all associated training data, embeddings, and chat sessions. This action cannot be undone.`}
+        itemName={`${selectedModels.size} model${selectedModels.size !== 1 ? 's' : ''}`}
+        isDeleting={isBulkDeleting}
       />
 
       {/* Training Progress Modal */}

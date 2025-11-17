@@ -45,7 +45,10 @@ export async function generateEmbedding(
   // Try OpenAI/OpenRouter first if available
   if (USE_OPENAI) {
     try {
-      return await OpenAIEmbeddings.generateEmbedding(text, model)
+      // Use default OpenAI model if none specified
+      // OpenRouter uses openai/text-embedding-3-small
+      const openaiModel = model || 'openai/text-embedding-3-small'
+      return await OpenAIEmbeddings.generateEmbedding(text, openaiModel)
     } catch (error) {
       console.error('[Embeddings] OpenAI failed, falling back to Ollama:', error)
       // Fall through to Ollama
@@ -116,7 +119,10 @@ export async function generateEmbeddings(
   // Try OpenAI/OpenRouter first if available (supports native batch)
   if (USE_OPENAI) {
     try {
-      return await OpenAIEmbeddings.generateEmbeddings(texts, model)
+      // Use default OpenAI model if none specified
+      // OpenRouter uses openai/text-embedding-3-small
+      const openaiModel = model || 'openai/text-embedding-3-small'
+      return await OpenAIEmbeddings.generateEmbeddings(texts, openaiModel)
     } catch (error) {
       console.error('[Embeddings] OpenAI batch failed, falling back to Ollama:', error)
       // Fall through to Ollama

@@ -257,7 +257,7 @@ export async function POST(request: NextRequest) {
 
       const retrievalResult = await retrieveContext(message, modelId, {
         topK: 5,
-        similarityThreshold: 0.35,
+        similarityThreshold: 0.25,
       })
 
       console.log(`[Chat API] RAG Result:`, {

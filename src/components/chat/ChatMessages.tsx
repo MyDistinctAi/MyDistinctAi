@@ -9,6 +9,7 @@
 import { useEffect, useRef } from 'react'
 import { User, Bot, Copy, RotateCcw } from 'lucide-react'
 import type { ChatMessage } from '@/types/chat'
+import { cleanChatMessage } from '@/lib/text-cleaner'
 
 interface ChatMessagesProps {
   messages: ChatMessage[]
@@ -37,19 +38,22 @@ export default function ChatMessages({
     }
   }
 
-  const renderMessageContent = (content: string) => {
+  const renderMessageContent = (content: string, isAssistant: boolean) => {
+    // Clean assistant messages to remove markdown characters
+    const cleanedContent = isAssistant ? cleanChatMessage(content) : content
+
     // Simple code block detection with ```
     const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g
     const parts: JSX.Element[] = []
     let lastIndex = 0
     let match
 
-    while ((match = codeBlockRegex.exec(content)) !== null) {
+    while ((match = codeBlockRegex.exec(cleanedContent)) !== null) {
       // Add text before code block
       if (match.index > lastIndex) {
         parts.push(
           <p key={`text-${lastIndex}`} className="whitespace-pre-wrap">
-            {content.slice(lastIndex, match.index)}
+            {cleanedContent.slice(lastIndex, match.index)}
           </p>
         )
       }
@@ -78,15 +82,15 @@ export default function ChatMessages({
     }
 
     // Add remaining text
-    if (lastIndex < content.length) {
+    if (lastIndex < cleanedContent.length) {
       parts.push(
         <p key={`text-${lastIndex}`} className="whitespace-pre-wrap">
-          {content.slice(lastIndex)}
+          {cleanedContent.slice(lastIndex)}
         </p>
       )
     }
 
-    return parts.length > 0 ? parts : <p className="whitespace-pre-wrap">{content}</p>
+    return parts.length > 0 ? parts : <p className="whitespace-pre-wrap">{cleanedContent}</p>
   }
 
   const formatTime = (timestamp: string) => {
@@ -138,7 +142,7 @@ export default function ChatMessages({
                     : 'bg-gray-100 text-gray-900'
                 }`}
               >
-                {renderMessageContent(message.content)}
+                {renderMessageContent(message.content, !isUser)}
               </div>
 
               {/* Message footer */}

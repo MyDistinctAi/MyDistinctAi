@@ -29,6 +29,18 @@ export default async function ModelsPage() {
 
     if (data && !error) {
       models = data
+
+      // Fetch document counts and names for each model
+      for (const model of models) {
+        const { data: docs, count } = await supabase
+          .from('training_data')
+          .select('id, file_name, status, file_size, chunk_count, file_type', { count: 'exact' })
+          .eq('model_id', model.id)
+          .eq('status', 'processed')
+
+        model.documents = docs || []
+        model.documentCount = count || 0
+      }
     }
   }
 

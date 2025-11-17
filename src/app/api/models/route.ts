@@ -112,7 +112,13 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    return NextResponse.json(models, { status: 200 })
+    // Return with cache headers for better performance
+    return NextResponse.json(models, {
+      status: 200,
+      headers: {
+        'Cache-Control': 'private, max-age=10, stale-while-revalidate=30',
+      }
+    })
   } catch (error) {
     console.error('Error fetching models:', error)
     return NextResponse.json(

@@ -81,41 +81,170 @@ export async function storeEmbeddings({
       usingAdminClient: !supabaseClient
     })
 
-    // Insert embeddings (batch insert)
-    const { data, error, count } = await supabase
-      .from('document_embeddings')
-      .insert(embeddingsData)
-      .select('id', { count: 'exact' })
+    // Insert embeddings in batches to avoid timeout with large datasets
+    const BATCH_SIZE = 100
+    let totalInserted = 0
 
-    console.log('[Vector Store] Insert result:', {
-      success: !error,
-      insertedCount: data?.length || count,
-      error: error?.message,
-      errorCode: error?.code,
-      errorDetails: error?.details
-    })
+    for (let i = 0; i < embeddingsData.length; i += BATCH_SIZE) {
+      const batch = embeddingsData.slice(i, i + BATCH_SIZE)
+      const batchNumber = Math.floor(i / BATCH_SIZE) + 1
+      const totalBatches = Math.ceil(embeddingsData.length / BATCH_SIZE)
 
-    if (error) {
-      console.error('[Vector Store] ❌ Failed to store embeddings:', {
-        message: error.message,
-        code: error.code,
-        details: error.details,
-        hint: error.hint
-      })
-      return {
-        success: false,
-        error: `Failed to store embeddings: ${error.message}`,
+      console.log(`[Vector Store] Inserting batch ${batchNumber}/${totalBatches} (${batch.length} rows)`)
+
+      const { data, error } = await supabase
+        .from('document_embeddings')
+        .insert(batch)
+        .select('id')
+
+      if (error) {
+        console.error('[Vector Store] ❌ Batch insert failed:', {
+          batch: batchNumber,
+          message: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint
+        })
+        return {
+          success: false,
+          error: `Failed to store embeddings (batch ${batchNumber}): ${error.message}`,
+        }
       }
+
+      totalInserted += data?.length || batch.length
+      console.log(`[Vector Store] ✅ Batch ${batchNumber} inserted: ${data?.length || batch.length} rows`)
     }
+
+    console.log(`[Vector Store] ✅ All embeddings stored: ${totalInserted} total rows`)
 
     return {
       success: true,
-      count: count || chunks.length,
+      count: totalInserted,
     }
   } catch (error) {
     return {
       success: false,
       error: `Failed to store embeddings: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    }
+  }
+}
+
+/**
+ * Hybrid search: Combines semantic (vector) + keyword (full-text) search
+ */
+export async function hybridSearch(
+  query: string,
+  queryEmbedding: number[],
+  modelId: string,
+  options: {
+    limit?: number
+    similarityThreshold?: number
+    keywordWeight?: number
+  } = {}
+): Promise<{ success: boolean; matches?: SimilarityMatch[]; error?: string }> {
+  try {
+    const { limit = 5, similarityThreshold = 0.25, keywordWeight = 0.3 } = options
+    
+    console.log(`[Hybrid Search] Query: "${query}"`)
+    console.log(`[Hybrid Search] Keyword weight: ${keywordWeight}`)
+    
+    const supabase = createClient()
+    
+    // 1. Semantic search (vector similarity)
+    const semanticResults = await searchSimilarDocuments(queryEmbedding, modelId, {
+      limit: limit * 2, // Get more candidates
+      similarityThreshold: similarityThreshold
+    })
+    
+    // 2. Keyword search (full-text)
+    const { data: keywordResults, error: keywordError } = await supabase
+      .from('document_embeddings')
+      .select('id, chunk_text, chunk_index, metadata, model_id, training_data_id')
+      .eq('model_id', modelId)
+      .textSearch('chunk_text', query.replace(/[^\w\s]/g, ' '), {
+        type: 'websearch',
+        config: 'english'
+      })
+      .limit(limit * 2)
+    
+    if (keywordError) {
+      console.warn('[Hybrid Search] Keyword search failed:', keywordError)
+    }
+    
+    // 3. Merge and re-rank results
+    const mergedResults = new Map<string, any>()
+    
+    // Add semantic results with their scores
+    if (semanticResults.success && semanticResults.matches) {
+      semanticResults.matches.forEach((match, index) => {
+        const semanticScore = match.similarity || 0
+        mergedResults.set(match.id, {
+          ...match,
+          semanticScore,
+          keywordScore: 0,
+          hybridScore: semanticScore * (1 - keywordWeight),
+          rank: index
+        })
+      })
+    }
+    
+    // Add/boost keyword results
+    if (keywordResults) {
+      keywordResults.forEach((result, index) => {
+        const keywordScore = 1 - (index / (keywordResults.length || 1)) // Decay score
+        
+        if (mergedResults.has(result.id)) {
+          // Boost existing result
+          const existing = mergedResults.get(result.id)!
+          existing.keywordScore = keywordScore
+          existing.hybridScore = 
+            existing.semanticScore * (1 - keywordWeight) + 
+            keywordScore * keywordWeight
+        } else {
+          // Add new keyword-only result
+          mergedResults.set(result.id, {
+            id: result.id,
+            chunk_text: result.chunk_text,
+            chunk_index: result.chunk_index,
+            metadata: result.metadata,
+            model_id: result.model_id,
+            training_data_id: result.training_data_id,
+            similarity: keywordScore * 0.5, // Lower base similarity
+            semanticScore: 0,
+            keywordScore,
+            hybridScore: keywordScore * keywordWeight,
+            rank: index + 1000 // Lower priority
+          })
+        }
+      })
+    }
+    
+    // Sort by hybrid score and take top results
+    const finalMatches = Array.from(mergedResults.values())
+      .sort((a, b) => b.hybridScore - a.hybridScore)
+      .slice(0, limit)
+      .map(match => ({
+        id: match.id,
+        chunk_text: match.chunk_text,
+        chunk_index: match.chunk_index,
+        metadata: match.metadata,
+        similarity: match.hybridScore, // Use hybrid score as similarity
+        model_id: match.model_id,
+        training_data_id: match.training_data_id
+      }))
+    
+    console.log(`[Hybrid Search] Results: ${finalMatches.length} matches`)
+    console.log(`[Hybrid Search] Top match score: ${finalMatches[0]?.similarity || 0}`)
+    
+    return {
+      success: true,
+      matches: finalMatches
+    }
+  } catch (error) {
+    console.error('[Hybrid Search] Error:', error)
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
     }
   }
 }
@@ -132,7 +261,7 @@ export async function searchSimilarDocuments(
   } = {}
 ): Promise<{ success: boolean; matches?: SimilarityMatch[]; error?: string }> {
   try {
-    const { limit = 5, similarityThreshold = 0.35 } = options
+    const { limit = 5, similarityThreshold = 0.25 } = options
 
     const supabase = createClient()
 

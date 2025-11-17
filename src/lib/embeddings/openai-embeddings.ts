@@ -59,15 +59,18 @@ function createClient() {
  */
 export async function generateEmbedding(
   text: string,
-  model: string = 'text-embedding-3-small'
+  model: string = 'openai/text-embedding-3-small'
 ): Promise<EmbeddingResult> {
   const startTime = Date.now()
 
   try {
     const client = createClient()
     
+    // OpenRouter requires full model name, OpenAI just needs the model name
+    const modelName = USE_OPENROUTER ? model : (model?.split('/').pop() || model || 'text-embedding-3-small')
+    
     const response = await client.embeddings.create({
-      model,
+      model: modelName,
       input: text,
     })
 
@@ -97,20 +100,27 @@ export async function generateEmbedding(
  */
 export async function generateEmbeddings(
   texts: string[],
-  model: string = 'text-embedding-3-small'
+  model: string = 'openai/text-embedding-3-small'
 ): Promise<BatchEmbeddingResult> {
   const startTime = Date.now()
 
   try {
+    console.log(`[OpenAI Embeddings] 🚀 Batch generating ${texts.length} embeddings using model: ${model}`)
     const client = createClient()
     
+    // OpenRouter requires full model name, OpenAI just needs the model name
+    const modelName = USE_OPENROUTER ? model : (model?.split('/').pop() || model || 'text-embedding-3-small')
+    
     const response = await client.embeddings.create({
-      model,
+      model: modelName,
       input: texts,
     })
 
     const embeddings = response.data.map(item => item.embedding)
     const totalProcessingTime = Date.now() - startTime
+    const avgTimePerEmbedding = totalProcessingTime / texts.length
+
+    console.log(`[OpenAI Embeddings] ✅ Batch complete: ${texts.length} embeddings in ${totalProcessingTime}ms (avg: ${avgTimePerEmbedding.toFixed(0)}ms each)`)
 
     return {
       success: true,

@@ -8,11 +8,12 @@
 
 import { useState } from 'react'
 import { X, ChevronDown, ChevronUp, Upload, FileText } from 'lucide-react'
+import { ProgressSteps, FILE_UPLOAD_STEPS, type ProgressStep } from '../ProgressSteps'
 
 interface CreateModelModalProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (data: ModelFormData, files?: File[]) => Promise<void>
+  onSubmit: (data: ModelFormData, files?: File[], onProgress?: (status: string) => void) => Promise<void>
   mode?: 'create' | 'edit'
   initialData?: ModelFormData & { id?: string }
 }
@@ -28,6 +29,8 @@ export interface ModelFormData {
   temperature?: number
   responseLength?: string
 }
+
+export type OnSubmitCallback = (data: ModelFormData, files?: File[], onProgress?: (status: string) => void) => Promise<void>
 
 // Check if running in Tauri (desktop app)
 const isTauri = typeof window !== 'undefined' && '__TAURI__' in window
@@ -77,6 +80,9 @@ export default function CreateModelModal({
   const [errors, setErrors] = useState<Partial<Record<keyof ModelFormData, string>>>({})
   const [selectedFiles, setSelectedFiles] = useState<File[]>([])
   const [uploadStatus, setUploadStatus] = useState<string>('')
+  const [uploadProgress, setUploadProgress] = useState<{current: number, total: number} | null>(null)
+  const [progressSteps, setProgressSteps] = useState<ProgressStep[]>([])
+  const [showProgress, setShowProgress] = useState(false)
 
   const [formData, setFormData] = useState<ModelFormData>(
     initialData || {
@@ -134,15 +140,46 @@ export default function CreateModelModal({
     setIsSubmitting(true)
     setUploadStatus('Creating model...')
 
+    // Initialize progress steps if files are selected
+    if (selectedFiles.length > 0) {
+      setShowProgress(true)
+      setProgressSteps(
+        FILE_UPLOAD_STEPS.map(step => ({
+          ...step,
+          status: 'pending' as const,
+          percentage: 0
+        }))
+      )
+    }
+
     try {
-      // Pass both form data and files to parent
-      await onSubmit(formData, selectedFiles)
-      
+      // Pass both form data and files to parent with progress callback
+      await onSubmit(formData, selectedFiles, (status: string) => {
+        setUploadStatus(status)
+
+        // Update progress steps based on status message
+        if (status.includes('Creating model')) {
+          // No file upload steps needed yet
+        } else if (status.includes('Processing file')) {
+          // File is being processed - show all steps
+          updateProgressStep('upload', 'completed', 100)
+          updateProgressStep('extract', 'in_progress', 50)
+        } else if (status.includes('✅ Processed')) {
+          // File processed successfully - mark all complete
+          FILE_UPLOAD_STEPS.forEach(step => {
+            updateProgressStep(step.id, 'completed', 100)
+          })
+        } else if (status.includes('❌ Failed')) {
+          // File processing failed
+          updateProgressStep('extract', 'error', 0)
+        }
+      })
+
       // Reset form
       setFormData({
         name: '',
         description: '',
-        baseModel: 'deepseek/deepseek-chat-v3.1:free',
+        baseModel: 'deepseek/deepseek-chat',
         trainingMode: 'standard',
         personality: '',
         learningRate: 0.0001,
@@ -152,6 +189,9 @@ export default function CreateModelModal({
       })
       setSelectedFiles([])
       setUploadStatus('')
+      setUploadProgress(null)
+      setProgressSteps([])
+      setShowProgress(false)
       onClose()
     } catch (error) {
       console.error('Error creating model:', error)
@@ -160,6 +200,15 @@ export default function CreateModelModal({
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  // Helper function to update progress steps
+  const updateProgressStep = (stepId: string, status: ProgressStep['status'], percentage?: number) => {
+    setProgressSteps(prev => prev.map(step =>
+      step.id === stepId
+        ? { ...step, status, percentage: percentage ?? step.percentage }
+        : step
+    ))
   }
 
   return (
@@ -372,8 +421,29 @@ export default function CreateModelModal({
                 </div>
               )}
               
-              {uploadStatus && (
-                <p className="mt-2 text-sm text-green-600">{uploadStatus}</p>
+              {uploadStatus && !showProgress && (
+                <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    {uploadStatus.includes('✅') ? (
+                      <span className="text-green-600 text-lg">✅</span>
+                    ) : uploadStatus.includes('❌') ? (
+                      <span className="text-red-600 text-lg">❌</span>
+                    ) : (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                    )}
+                    <p className="text-sm font-medium text-blue-900">{uploadStatus}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Progress Steps */}
+              {showProgress && progressSteps.length > 0 && (
+                <div className="mt-4 p-4 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
+                  <h4 className="text-sm font-semibold text-gray-900 mb-3">
+                    Processing Files...
+                  </h4>
+                  <ProgressSteps steps={progressSteps} showPercentages={true} />
+                </div>
               )}
             </div>
 
