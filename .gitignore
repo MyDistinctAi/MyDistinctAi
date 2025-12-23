@@ -1,0 +1,150 @@
+# Dependencies
+node_modules
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+test-results*.txt
+test-results*.json
+
+# Next.js
+/.next/
+/out/
+.next
+
+# Production
+/build
+/dist
+/desktop-dist
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env
+.env.development
+.env.production
+.env.vercel
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Tauri
+/src-tauri/target
+/src-tauri/Cargo.lock
+
+# LanceDB
+/data
+
+# IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea
+*.swp
+*.swo
+*~
+.windsurf
+.claude
+
+# OS
+Thumbs.db
+
+# Development artifacts (do not commit)
+# Test scripts
+test-*.mjs
+test-*.js
+test-*.txt
+test-*.pdf
+test-*.html
+check-*.mjs
+check-*.js
+fix-*.mjs
+fix-*.js
+fix-*.sql
+process-*.mjs
+cleanup-*.mjs
+reset-*.js
+reset-*.sql
+switch-*.mjs
+update-*.mjs
+update-*.sql
+trigger-*.mjs
+verify-*.mjs
+kill-and-restart.mjs
+run-sql-fix.js
+complete-database-cleanup.mjs
+reprocess-all-files.mjs
+setup-and-test-*.mjs
+upload-test-file.mjs
+create-test-model.mjs
+
+# Sample/temporary files
+sample-*.txt
+nul
+
+# Screenshots
+*.png
+!public/*.png
+!src-tauri/icons/*.png
+
+# Development documentation (keeping only essential docs)
+*_SUMMARY.md
+*_COMPLETE.md
+*_FIX.md
+*_FIXED.md
+*_STATUS.md
+*_RESULTS.md
+*_GUIDE.md
+!docs/**/*.md
+SESSION_*.md
+FINDINGS.txt
+ANALYSIS_SUMMARY.txt
+VISUAL_SUMMARY.txt
+console\ errors.md
+errorsss.md
+bugs.md
+infos.md
+notes.md
+newprompt.md
+promptforclaude.md
+Newworkflow.md
+Currentstatus.md
+decisions.md
+
+# Large task/planning files (use docs/ instead)
+tasks.md
+planning.md
+progress.md
+CLAUDE.md
+INTEGRATION_EXAMPLE.tsx
+app-icon.svg
+
+# Batch/shell scripts
+restart-server.bat
+run-worker.bat
+run-worker.ps1
+vercel-env-setup.sh
+
+.vercel
+
+src-tauri-working-versiion/
+
+src/app/desktop-dashboard/

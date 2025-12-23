@@ -1,0 +1,252 @@
+ACME CORPORATION - EMPLOYEE HANDBOOK 2024
+
+==============================================
+COMPANY OVERVIEW
+==============================================
+
+Founded: January 15, 2010
+Headquarters: 123 Innovation Drive, San Francisco, CA 94105
+CEO: Sarah Johnson
+Employees: 2,500+ worldwide
+Mission: "Empowering businesses through innovative AI solutions"
+
+==============================================
+VACATION POLICY
+==============================================
+
+Full-time employees receive:
+- Year 1-2: 15 days paid vacation
+- Year 3-5: 20 days paid vacation  
+- Year 6+: 25 days paid vacation
+
+Additional Benefits:
+- 10 paid sick days per year
+- 12 paid holidays
+- 5 personal days
+- Unlimited unpaid time off (with manager approval)
+
+Vacation Request Process:
+1. Submit request at least 2 weeks in advance
+2. Get manager approval via email
+3. Update team calendar
+4. Set out-of-office auto-reply
+
+==============================================
+REMOTE WORK POLICY
+==============================================
+
+Eligibility:
+- Must be employed for at least 6 months
+- Performance rating of "Meets Expectations" or higher
+- Role must be suitable for remote work
+
+Remote Work Options:
+- Hybrid: 2-3 days in office, 2-3 days remote
+- Full Remote: Available for specific roles only
+- Flexible Hours: Core hours 10am-3pm, flexible outside that
+
+Equipment Provided:
+- Laptop (MacBook Pro or Dell XPS)
+- Monitor (27-inch 4K)
+- Keyboard and mouse
+- $500 home office stipend
+
+Internet Reimbursement:
+- Up to $75/month for home internet
+- Must provide monthly invoice
+- Submit via expense system by 5th of each month
+
+==============================================
+HEALTH INSURANCE
+==============================================
+
+Coverage Starts: First day of employment
+
+Plan Options:
+1. Gold Plan
+   - Premium: $150/month (employee portion)
+   - Deductible: $500
+   - Out-of-pocket max: $2,000
+   - Coverage: 90% after deductible
+
+2. Silver Plan
+   - Premium: $75/month (employee portion)
+   - Deductible: $1,500
+   - Out-of-pocket max: $5,000
+   - Coverage: 80% after deductible
+
+3. Bronze Plan
+   - Premium: $25/month (employee portion)
+   - Deductible: $3,000
+   - Out-of-pocket max: $7,500
+   - Coverage: 70% after deductible
+
+Dental & Vision:
+- Included in all plans at no extra cost
+- Dental: 2 cleanings/year, 80% coverage for procedures
+- Vision: Annual eye exam, $200 towards glasses/contacts
+
+==============================================
+401(K) RETIREMENT PLAN
+==============================================
+
+Company Match:
+- 100% match up to 6% of salary
+- Vesting schedule: 20% per year (fully vested after 5 years)
+- Immediate enrollment available
+
+Investment Options:
+- Target date funds
+- Index funds (S&P 500, Total Market)
+- Bond funds
+- International funds
+
+Contribution Limits (2024):
+- Employee: Up to $23,000/year
+- Catch-up (age 50+): Additional $7,500/year
+
+==============================================
+PROFESSIONAL DEVELOPMENT
+==============================================
+
+Annual Budget: $2,000 per employee
+
+Eligible Expenses:
+- Online courses (Coursera, Udemy, LinkedIn Learning)
+- Conference attendance
+- Professional certifications
+- Technical books and subscriptions
+- Workshops and seminars
+
+Approval Process:
+1. Discuss with manager
+2. Submit request via Learning Portal
+3. Get VP approval for expenses over $1,000
+4. Complete within 12 months
+
+Popular Certifications:
+- AWS Certified Solutions Architect: $300
+- PMP (Project Management): $555
+- Certified Scrum Master: $1,000
+- Google Cloud Professional: $200
+
+==============================================
+PERFORMANCE REVIEWS
+==============================================
+
+Schedule:
+- Quarterly check-ins (informal)
+- Annual performance review (formal)
+- Mid-year review (formal)
+
+Rating Scale:
+1. Exceeds Expectations (Top 10%)
+2. Meets Expectations (70%)
+3. Needs Improvement (15%)
+4. Unsatisfactory (5%)
+
+Compensation Impact:
+- Exceeds: 8-12% raise + bonus
+- Meets: 3-5% raise + bonus
+- Needs Improvement: 0-2% raise, no bonus
+- Unsatisfactory: Performance improvement plan
+
+==============================================
+PARENTAL LEAVE
+==============================================
+
+Birth Parent:
+- 16 weeks paid leave
+- Can be taken within 12 months of birth
+- Full salary continuation
+
+Non-Birth Parent:
+- 8 weeks paid leave
+- Can be taken within 12 months of birth/adoption
+- Full salary continuation
+
+Adoption Leave:
+- 12 weeks paid leave
+- Applies to both parents
+- Additional $5,000 adoption assistance
+
+Return to Work:
+- Flexible return schedule available
+- Gradual ramp-up option (part-time for first month)
+- Lactation rooms available in all offices
+
+==============================================
+EMPLOYEE REFERRAL PROGRAM
+==============================================
+
+Referral Bonus:
+- Engineering roles: $5,000
+- Sales roles: $3,000
+- Other roles: $2,000
+
+Payment Schedule:
+- 50% after candidate completes 90 days
+- 50% after candidate completes 6 months
+
+Requirements:
+- Referred candidate must stay 6 months
+- Cannot refer family members
+- No limit on number of referrals
+
+==============================================
+OFFICE LOCATIONS
+==============================================
+
+San Francisco HQ:
+- Address: 123 Innovation Drive, San Francisco, CA 94105
+- Phone: (415) 555-0100
+- Hours: 8am-6pm PST
+- Parking: $20/day or $200/month pass
+
+New York Office:
+- Address: 456 Tech Plaza, New York, NY 10001
+- Phone: (212) 555-0200
+- Hours: 9am-7pm EST
+- Subway: 2 blocks from Penn Station
+
+Austin Office:
+- Address: 789 Startup Lane, Austin, TX 78701
+- Phone: (512) 555-0300
+- Hours: 8am-6pm CST
+- Free parking available
+
+London Office:
+- Address: 321 Innovation Street, London EC2A 4BX, UK
+- Phone: +44 20 7123 4567
+- Hours: 9am-6pm GMT
+- Tube: 5 min walk from Old Street
+
+==============================================
+CONTACT INFORMATION
+==============================================
+
+HR Department: hr@acmecorp.com
+IT Support: itsupport@acmecorp.com
+Benefits Questions: benefits@acmecorp.com
+Payroll: payroll@acmecorp.com
+
+Emergency Hotline: 1-800-555-HELP (24/7)
+Employee Assistance Program: 1-888-555-CARE
+
+==============================================
+IMPORTANT DATES
+==============================================
+
+Open Enrollment: November 1-30 annually
+Performance Reviews: January and July
+Company All-Hands: First Friday of each quarter
+Holiday Party: December 15, 2024
+Summer Picnic: July 20, 2024
+
+==============================================
+END OF HANDBOOK
+==============================================
+
+Last Updated: January 1, 2024
+Version: 5.2
+Next Review: January 1, 2025

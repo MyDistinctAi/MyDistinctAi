@@ -1,0 +1,264 @@
+# TechVision Inc. - Company Information & Q&A Test Document
+
+## Company Overview
+TechVision Inc. is a leading software development company specializing in AI-powered enterprise solutions. Founded in 2020 by Sarah Chen and Michael Rodriguez, the company has grown to over 200 employees across 5 global offices.
+
+**Headquarters:** San Francisco, California, USA
+**CEO:** Sarah Chen
+**CTO:** Michael Rodriguez
+**Founded:** January 2020
+**Employees:** 200+
+**Revenue (2024):** $50 million
+**Valuation:** $250 million (Series B, 2024)
+
+## Products and Services
+
+### 1. CloudAI Platform
+Our flagship product is CloudAI Platform, an enterprise AI solution that helps businesses automate workflows and make data-driven decisions. The platform features:
+- Natural Language Processing (NLP) for document analysis
+- Predictive analytics and forecasting
+- Automated report generation
+- Real-time data visualization
+- Integration with 50+ enterprise tools (Salesforce, SAP, Oracle, etc.)
+
+**Pricing:** Starting at $5,000/month for small businesses, up to $50,000/month for enterprise clients
+
+### 2. DataInsight Analytics
+A specialized analytics tool for e-commerce businesses that provides:
+- Customer behavior analysis
+- Sales forecasting with 95% accuracy
+- Inventory optimization recommendations
+- Marketing campaign performance tracking
+- Competitor analysis
+
+**Pricing:** $2,500/month (Standard), $7,500/month (Premium)
+
+### 3. SecureDoc AI
+Document management system with AI-powered security features:
+- Automatic document classification
+- Sensitive information detection and redaction
+- Compliance monitoring (GDPR, HIPAA, SOC 2)
+- Version control and audit trails
+- Encrypted storage with AES-256
+
+**Pricing:** $1,500/month + $10 per user
+
+## Employee Benefits
+
+### Health & Wellness
+- **Medical Insurance:** Platinum-level coverage with 100% premium coverage for employees, 80% for dependents
+- **Dental & Vision:** Comprehensive coverage included
+- **Mental Health:** Free therapy sessions (12 sessions per year) through Modern Health
+- **Gym Membership:** $100/month reimbursement for any gym or fitness program
+- **Wellness Days:** 4 additional days off per year for mental health
+
+### Time Off
+- **Vacation:** 25 days per year (increases to 30 days after 3 years)
+- **Sick Leave:** 15 days per year (unused days roll over)
+- **Parental Leave:** 6 months paid leave for primary caregivers, 3 months for secondary caregivers
+- **Sabbatical:** 3 months paid sabbatical after 5 years of service
+
+### Financial Benefits
+- **Base Salary:** Competitive rates (median: $120,000 for engineers, $95,000 for other roles)
+- **401(k) Matching:** 100% match up to 8% of salary
+- **Stock Options:** All employees receive equity grants (0.1% - 2% depending on role and seniority)
+- **Annual Bonus:** Performance-based bonuses averaging 15-25% of base salary
+- **Signing Bonus:** $10,000 - $30,000 for senior roles
+
+### Professional Development
+- **Learning Budget:** $5,000 per year for courses, conferences, and certifications
+- **Conference Attendance:** Covers travel and accommodation for 2 conferences per year
+- **Internal Training:** Weekly tech talks, monthly workshops, quarterly leadership training
+- **Tuition Reimbursement:** Up to $15,000/year for advanced degrees related to work
+
+### Work Environment
+- **Remote Work:** Fully remote or hybrid (3 days in office, 2 days remote)
+- **Home Office Setup:** $2,000 budget for desk, chair, monitor, and accessories
+- **Co-working Allowance:** $300/month for co-working space if working remotely
+- **Technology:** Latest MacBook Pro or custom-built PC, 2 external monitors, noise-canceling headphones
+
+### Other Perks
+- **Free Lunch:** Daily catered lunches at all offices
+- **Snacks & Drinks:** Fully stocked kitchen with healthy snacks, coffee, and beverages
+- **Team Events:** Monthly team outings, quarterly company-wide events, annual retreat
+- **Pet-Friendly Office:** Bring your dog to work every Friday
+- **Commuter Benefits:** $200/month pre-tax for public transportation or parking
+
+## Office Locations
+
+1. **San Francisco HQ** - 150 employees
+   Address: 555 Market Street, Suite 2000, San Francisco, CA 94105
+
+2. **New York Office** - 30 employees
+   Address: 350 Fifth Avenue, Floor 15, New York, NY 10118
+
+3. **Austin Office** - 20 employees
+   Address: 301 Congress Avenue, Suite 1800, Austin, TX 78701
+
+4. **London Office** - 15 employees
+   Address: 1 Canada Square, Canary Wharf, London E14 5AB, UK
+
+5. **Singapore Office** - 10 employees
+   Address: 1 Marina Boulevard, #20-01, Singapore 018989
+
+## Company Culture
+
+### Core Values
+1. **Innovation First:** We encourage experimentation and calculated risk-taking
+2. **Customer Obsession:** Every decision is made with customer success in mind
+3. **Transparency:** Open communication at all levels, including financial transparency
+4. **Diversity & Inclusion:** 50% of our workforce identifies as women or non-binary, 40% from underrepresented minorities
+5. **Work-Life Balance:** No one is expected to work more than 40 hours per week
+
+### Engineering Practices
+- **Tech Stack:** Python, TypeScript, React, Next.js, PostgreSQL, Redis, AWS
+- **Development Process:** Agile with 2-week sprints
+- **Code Review:** All code must be reviewed by at least 2 engineers
+- **Testing:** 90%+ code coverage required for all production code
+- **Deployment:** Continuous deployment with 10+ deployments per day
+- **On-Call Rotation:** 1 week per quarter with $500 bonus per on-call week
+
+### Diversity & Inclusion Initiatives
+- Employee Resource Groups (ERGs): Women in Tech, LGBTQ+ Allies, Black Professionals Network, Asian Employee Network
+- Blind resume screening for all candidates
+- Diverse interview panels required
+- Annual D&I training for all employees
+- Transparent salary bands published internally
+
+## Frequently Asked Questions
+
+### For Prospective Employees
+
+**Q: What's the interview process like?**
+A: Our process typically takes 2-3 weeks:
+1. Initial phone screen (30 minutes) with recruiter
+2. Technical assessment (take-home project, 3-4 hours)
+3. Virtual onsite (4 hours): coding interview, system design, behavioral interview, and team fit discussion
+4. Final interview with hiring manager or executive team
+5. Offer decision within 48 hours
+
+**Q: Do you sponsor work visas?**
+A: Yes! We sponsor H-1B, TN, and other work visas for qualified candidates. We also support green card applications after 1 year of employment.
+
+**Q: What's the promotion timeline?**
+A: We conduct performance reviews twice a year (June and December). Promotions are merit-based, with typical timelines:
+- Junior to Mid-level: 18-24 months
+- Mid-level to Senior: 2-3 years
+- Senior to Staff/Principal: 3-4 years
+
+**Q: Can I work fully remote?**
+A: Yes! About 30% of our employees work fully remote. We provide home office setup, co-working allowance, and fly remote employees to HQ once per quarter for team events.
+
+**Q: What's the dress code?**
+A: Casual. Wear whatever makes you comfortable and productive. Most employees wear jeans and t-shirts.
+
+### For Customers
+
+**Q: What security certifications do you have?**
+A: We are SOC 2 Type II certified, GDPR compliant, and HIPAA compliant. We undergo annual third-party security audits.
+
+**Q: What's your SLA uptime guarantee?**
+A: We guarantee 99.9% uptime for all our products. If we fall below this, customers receive service credits:
+- 99.0% - 99.9%: 10% credit
+- 95.0% - 99.0%: 25% credit
+- Below 95%: 50% credit
+
+**Q: Do you offer custom integrations?**
+A: Yes! Our Enterprise plan includes up to 10 custom integrations per year at no additional cost. Additional integrations are $5,000 each.
+
+**Q: What's your data retention policy?**
+A: We retain customer data for the duration of the contract plus 90 days. After that, data is permanently deleted unless customers request extended retention (available for additional fee).
+
+**Q: Can we host on-premise?**
+A: Yes! Our Enterprise plan includes an on-premise deployment option. This requires a minimum contract of $100,000/year.
+
+## Recent News & Achievements
+
+### 2024 Highlights
+- **Series B Funding:** Raised $75 million led by Sequoia Capital (March 2024)
+- **Awards:** Named to Forbes Cloud 100 list (September 2024)
+- **Product Launch:** SecureDoc AI launched (June 2024), reached 500 customers in 3 months
+- **Customer Milestone:** Surpassed 5,000 active customers globally
+- **Partnership:** Strategic partnership with Microsoft Azure (August 2024)
+- **Expansion:** Opened London and Singapore offices (April & July 2024)
+
+### Industry Recognition
+- Gartner Magic Quadrant Leader for Enterprise AI Platforms (2023, 2024)
+- G2 Best Software Award for AI/ML category (2024)
+- TrustRadius Top Rated Award (2023, 2024)
+- Inc. 5000 Fastest-Growing Private Companies (#127, 2024)
+
+## Contact Information
+
+**Sales Inquiries:** sales@techvision.ai | +1 (415) 555-0100
+**Customer Support:** support@techvision.ai | 24/7 live chat
+**Careers:** careers@techvision.ai | jobs.techvision.ai
+**Press & Media:** press@techvision.ai
+**General Inquiries:** info@techvision.ai
+
+**Social Media:**
+- LinkedIn: linkedin.com/company/techvision-ai
+- Twitter: @TechVisionAI
+- GitHub: github.com/techvision-ai
+
+---
+
+## Test Questions to Ask Your AI
+
+After uploading this document, try asking these questions to test RAG accuracy:
+
+### Basic Information Retrieval
+1. Who is the CEO of TechVision Inc.?
+2. When was the company founded?
+3. How many employees does TechVision have?
+4. What is the company's valuation as of 2024?
+5. Where is the headquarters located?
+
+### Product-Specific Questions
+6. What are the three main products offered by TechVision?
+7. How much does the CloudAI Platform cost for enterprise clients?
+8. What features does SecureDoc AI provide?
+9. What is the accuracy rate of sales forecasting in DataInsight Analytics?
+10. Does TechVision offer on-premise deployment?
+
+### Employee Benefits Questions
+11. How many vacation days do employees get per year?
+12. What is the 401(k) matching percentage?
+13. How long is parental leave for primary caregivers?
+14. What is the annual learning budget for professional development?
+15. Do employees get equity/stock options?
+
+### Complex/Multi-Part Questions
+16. What is the complete interview process and how long does it take?
+17. List all office locations and how many employees are in each.
+18. What are the company's core values?
+19. What security certifications does TechVision have?
+20. What happens if the platform uptime falls below 99%?
+
+### Numerical/Calculation Questions
+21. What is the salary range for engineers at TechVision?
+22. How much can an employee spend on home office setup?
+23. What is the signing bonus range for senior roles?
+24. How many custom integrations are included in the Enterprise plan?
+25. What is the cost per additional user for SecureDoc AI?
+
+### Policy/Process Questions
+26. Does TechVision sponsor work visas?
+27. Can employees work fully remote?
+28. What is the data retention policy?
+29. How often are performance reviews conducted?
+30. What is the typical promotion timeline from Junior to Senior?
+
+### Recent News Questions
+31. When did TechVision raise Series B funding and how much?
+32. Which office locations were opened in 2024?
+33. How many customers does SecureDoc AI have after 3 months?
+34. Who led the Series B funding round?
+35. What partnership was announced in August 2024?
+
+### Edge Cases / Testing Limits
+36. What is the pet policy at TechVision offices?
+37. Compare the pricing of all three products.
+38. What programming languages and tech stack does TechVision use?
+39. How many deployments does the engineering team do per day?
+40. What is the bonus for on-call rotation weeks?

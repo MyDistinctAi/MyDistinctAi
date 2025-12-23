@@ -1,0 +1,273 @@
+INNOVATECH STARTUP - EMPLOYEE HANDBOOK 2025
+============================================
+
+COMPANY INFORMATION
+-------------------
+Company Name: InnovaTech Solutions
+Founded: March 2023
+Founder & CEO: Jessica Martinez
+Co-Founder & CTO: Alex Thompson
+Head of Product: Priya Patel
+Head of Sales: Marcus Johnson
+
+Headquarters: 
+456 Startup Lane, Suite 200
+Austin, Texas 78701
+Phone: (512) 555-0188
+Email: hello@innovatech.io
+Website: www.innovatech.io
+
+MISSION & VISION
+----------------
+Mission: "Democratizing AI tools for small businesses worldwide"
+Vision: "A world where every small business has access to enterprise-level AI capabilities"
+
+Core Values:
+1. Move Fast, Learn Faster
+2. Customer Obsession
+3. Radical Transparency
+4. Embrace Failure
+5. Work-Life Harmony
+
+PRODUCTS & SERVICES
+-------------------
+Main Product: SmartBiz AI Platform
+- AI-powered business analytics
+- Automated customer insights
+- Predictive sales forecasting
+- Smart inventory management
+
+Pricing:
+- Starter Plan: $49/month (up to 5 users)
+- Growth Plan: $149/month (up to 20 users)
+- Enterprise Plan: Custom pricing (unlimited users)
+
+TEAM STRUCTURE
+--------------
+Total Employees: 35
+- Engineering: 15 people
+- Product: 5 people
+- Sales & Marketing: 8 people
+- Customer Success: 4 people
+- Operations: 3 people
+
+COMPENSATION & BENEFITS
+-----------------------
+Salary Ranges:
+- Junior Engineer: $80,000 - $100,000
+- Senior Engineer: $120,000 - $160,000
+- Product Manager: $110,000 - $140,000
+- Sales Representative: $60,000 base + commission
+
+Equity:
+- All employees receive stock options
+- Standard vesting: 4 years with 1-year cliff
+- Early employees: 0.5% - 2% equity
+- Later hires: 0.1% - 0.5% equity
+
+Benefits Package:
+- Health insurance: 100% premium covered for employees, 75% for dependents
+- Dental & Vision: Fully covered
+- 401(k) matching: 4% of salary
+- Unlimited PTO (minimum 15 days required)
+- Remote work: Fully remote-friendly
+- Home office stipend: $1,500 one-time
+- Learning & development: $2,500/year per employee
+- Gym membership: $100/month reimbursement
+- Mental health support: Free therapy sessions (10 per year)
+- Parental leave: 16 weeks paid for primary caregiver, 8 weeks for secondary
+
+WORKING HOURS & CULTURE
+-----------------------
+Core Hours: 11 AM - 3 PM (team overlap time)
+Flexible Schedule: Work when you're most productive
+Meeting-Free Wednesdays: No internal meetings on Wednesdays
+All-Hands Meeting: Every Friday at 4 PM
+Team Offsites: Quarterly (company-paid)
+
+Remote Work Policy:
+- Work from anywhere in the US
+- International remote: Case-by-case basis
+- Co-working space reimbursement: Up to $300/month
+- Annual company retreat: All expenses paid
+
+VACATION & TIME OFF
+-------------------
+Vacation Policy: Unlimited PTO with 15-day minimum
+Sick Days: Unlimited (no questions asked)
+Company Holidays: 12 days
+- New Year's Day
+- Martin Luther King Jr. Day
+- Presidents' Day
+- Memorial Day
+- Juneteenth
+- Independence Day
+- Labor Day
+- Thanksgiving (2 days)
+- Christmas (2 days)
+- Company Shutdown: Last week of December
+
+Personal Days: 5 floating holidays per year
+
+PERFORMANCE & GROWTH
+--------------------
+Performance Reviews: Quarterly check-ins, annual formal review
+Promotion Criteria:
+- Consistent high performance
+- Leadership demonstration
+- Cross-functional collaboration
+- Innovation and initiative
+
+Career Development:
+- Internal mobility encouraged
+- Mentorship program available
+- Conference attendance: 2 per year (company-paid)
+- Online courses: Unlimited access to Udemy, Coursera, etc.
+
+OFFICE LOCATIONS & FACILITIES
+------------------------------
+Austin HQ:
+- Open office layout with focus rooms
+- Standing desks for everyone
+- Fully stocked kitchen
+- Game room with ping pong and video games
+- Nap pods
+- Bike storage and showers
+
+San Francisco Satellite Office:
+789 Tech Street, San Francisco, CA 94103
+- Hot desks available (book via Slack)
+- Meeting rooms for client visits
+- Coffee bar
+
+TECHNOLOGY & TOOLS
+------------------
+Standard Equipment:
+- MacBook Pro (M3) or equivalent PC
+- External monitor (27" or 32")
+- Ergonomic keyboard and mouse
+- Noise-canceling headphones
+- Standing desk converter (if needed)
+
+Software Stack:
+- Communication: Slack, Zoom
+- Project Management: Linear, Notion
+- Design: Figma
+- Development: GitHub, VS Code
+- Analytics: Mixpanel, Amplitude
+
+CUSTOMER SUCCESS METRICS
+-------------------------
+Current Metrics (Q1 2025):
+- Active Customers: 1,247
+- Monthly Recurring Revenue (MRR): $186,000
+- Customer Satisfaction Score: 4.7/5.0
+- Net Promoter Score (NPS): 68
+- Churn Rate: 3.2% monthly
+- Average Customer Lifetime Value: $12,400
+
+Growth Targets (2025):
+- Reach 5,000 customers by end of year
+- Achieve $1M MRR by Q4
+- Maintain NPS above 60
+- Reduce churn to under 2.5%
+
+COMPANY POLICIES
+----------------
+Code of Conduct:
+- Respect and inclusivity required
+- Zero tolerance for harassment
+- Confidentiality of company information
+- No conflicts of interest
+
+Social Media Policy:
+- Personal accounts are personal
+- Don't share confidential information
+- Be respectful when discussing work
+- Identify opinions as your own
+
+Expense Policy:
+- Meals with clients: Up to $100 per person
+- Team lunches: Up to $30 per person
+- Travel: Economy class for flights under 4 hours
+- Hotels: Up to $200 per night in major cities
+
+EMERGENCY CONTACTS
+------------------
+HR Director: Sarah Kim
+Email: sarah@innovatech.io
+Phone: (512) 555-0199
+
+IT Support: support@innovatech.io
+Facilities: facilities@innovatech.io
+Anonymous Hotline: (800) 555-0123
+
+ONBOARDING CHECKLIST
+--------------------
+Week 1:
+- Complete HR paperwork
+- Set up equipment and accounts
+- Meet your team and manager
+- Review company handbook
+- Attend orientation session
+
+Week 2:
+- Shadow team members
+- Start first small project
+- Set up 1-on-1s with key stakeholders
+- Join relevant Slack channels
+
+First 30 Days:
+- Complete onboarding training
+- Ship first meaningful contribution
+- Receive feedback from manager
+- Set quarterly goals
+
+FREQUENTLY ASKED QUESTIONS
+--------------------------
+Q: Can I work from a different time zone?
+A: Yes, as long as you have 4 hours of overlap with core hours (11 AM - 3 PM Central Time).
+
+Q: How do I request time off?
+A: Post in #time-off Slack channel and add to the shared calendar. No approval needed for less than 2 weeks.
+
+Q: What's the dress code?
+A: Wear what makes you comfortable and productive. Business casual for client meetings.
+
+Q: Can I bring my dog to the office?
+A: Yes! We're dog-friendly. Just make sure they're well-behaved and up to date on vaccinations.
+
+Q: How often do we get raises?
+A: Annual merit increases based on performance. Promotions come with salary adjustments.
+
+Q: What's the interview process like?
+A: Phone screen → Technical/Skills assessment → Team fit interview → Founder interview → Offer
+
+COMPANY MILESTONES
+------------------
+March 2023: Company founded
+June 2023: First customer signed
+September 2023: Seed funding raised ($2M)
+December 2023: Reached 100 customers
+March 2024: Series A funding ($8M)
+June 2024: Launched Enterprise plan
+September 2024: Opened SF office
+January 2025: Reached 1,000 customers
+March 2025: Celebrating 2-year anniversary!
+
+CONTACT INFORMATION
+-------------------
+General Inquiries: hello@innovatech.io
+Sales: sales@innovatech.io
+Support: support@innovatech.io
+Careers: jobs@innovatech.io
+Press: press@innovatech.io
+
+Follow Us:
+Twitter: @InnovaTechAI
+LinkedIn: /company/innovatech-solutions
+Instagram: @innovatech.io
+
+---
+Last Updated: March 2025
+Version 2.1

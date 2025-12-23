@@ -1,0 +1,33 @@
+# MyDistinctAI Test Document
+
+## Company Information
+
+**Company Name:** Acme Technology Solutions  
+**Founded:** January 15, 2020  
+**Headquarters:** San Francisco, California  
+**CEO:** Dr. Sarah Mitchell  
+
+## Products
+
+### Product 1: SmartAnalyzer Pro
+- Price: $299/month
+- Features: Real-time data analysis, ML predictions, custom dashboards
+- Release Date: March 2023
+
+### Product 2: CloudSync Enterprise
+- Price: $499/month  
+- Features: Multi-cloud integration, automated backups, zero-downtime deployment
+- Release Date: September 2022
+
+## Key Metrics
+
+- Total Employees: 487
+- Annual Revenue: $42.3 million
+- Customer Satisfaction Score: 94.7%
+- Active Users: 15,000+
+
+## Secret Code
+
+The secret access code for this test is: **UNICORN-RAINBOW-42**
+
+This document is for testing purposes to verify that the RAG system can retrieve and use this information when answering questions.
