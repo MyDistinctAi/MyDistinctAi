@@ -81,6 +81,9 @@ export default function DocsPage() {
         </div>
       ),
     },
+    // API Reference section temporarily removed for user testing
+    // Uncomment this section to re-enable API documentation
+    /*
     {
       id: 'api-reference',
       title: 'API Reference',
@@ -218,6 +221,7 @@ export default function DocsPage() {
         </div>
       ),
     },
+    */
     {
       id: 'self-hosting',
       title: 'Self-Hosting Guide',
@@ -252,7 +256,7 @@ export default function DocsPage() {
                   <h4 className="font-semibold text-gray-900 mb-2">1. Install Ollama</h4>
                   <div className="relative">
                     <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
-{`# Linux/macOS
+                      {`# Linux/macOS
 curl -fsSL https://ollama.com/install.sh | sh
 
 # Windows
@@ -276,7 +280,7 @@ curl -fsSL https://ollama.com/install.sh | sh
                   <h4 className="font-semibold text-gray-900 mb-2">2. Clone Repository</h4>
                   <div className="relative">
                     <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
-{`git clone https://github.com/yourusername/mydistinctai.git
+                      {`git clone https://github.com/yourusername/mydistinctai.git
 cd mydistinctai
 npm install`}
                     </pre>
@@ -300,7 +304,7 @@ npm install`, 'clone-repo')}
                   <h4 className="font-semibold text-gray-900 mb-2">3. Configure Environment</h4>
                   <div className="relative">
                     <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
-{`cp .env.example .env.local
+                      {`cp .env.example .env.local
 # Edit .env.local with your Supabase credentials
 # Set OLLAMA_URL=http://localhost:11434`}
                     </pre>
@@ -322,7 +326,7 @@ npm install`, 'clone-repo')}
                   <h4 className="font-semibold text-gray-900 mb-2">4. Start Services</h4>
                   <div className="relative">
                     <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
-{`# Start Ollama
+                      {`# Start Ollama
 ollama serve
 
 # Start Next.js app
@@ -545,11 +549,10 @@ npm run dev`}
                     <li key={section.id}>
                       <button
                         onClick={() => setActiveSection(section.id)}
-                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors ${
-                          activeSection === section.id
+                        className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors ${activeSection === section.id
                             ? 'bg-blue-50 text-blue-700 font-medium'
                             : 'text-gray-700 hover:bg-gray-100'
-                        }`}
+                          }`}
                       >
                         <Icon className="h-5 w-5 flex-shrink-0" />
                         <span className="text-sm">{section.title}</span>

@@ -24,7 +24,8 @@ const footerLinks = {
   ],
   resources: [
     { label: 'Getting Started', href: '/dashboard/docs' },
-    { label: 'API Reference', href: '/dashboard/docs#api' },
+    // API Reference temporarily removed for user testing
+    // { label: 'API Reference', href: '/dashboard/docs#api' },
     { label: 'Self-Hosting', href: '/dashboard/docs#self-hosting' },
     { label: 'Support', href: '#support' },
   ],

@@ -190,6 +190,9 @@ export default function DocsPage() {
         '- Monitor usage for suspicious activity',
       ],
     },
+    // API Documentation section temporarily removed for user testing
+    // Uncomment this section to re-enable API documentation
+    /*
     {
       id: 'api-docs',
       title: 'API Documentation',
@@ -347,6 +350,7 @@ export default function DocsPage() {
         '```',
       ],
     },
+    */
     {
       id: 'self-hosting',
       title: 'Self-Hosting Guide',
@@ -798,11 +802,10 @@ export default function DocsPage() {
                   <button
                     key={section.id}
                     onClick={() => setActiveSection(section.id)}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                      activeSection === section.id
-                        ? 'bg-blue-50 text-blue-600'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
+                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${activeSection === section.id
+                      ? 'bg-blue-50 text-blue-600'
+                      : 'text-gray-700 hover:bg-gray-100'
+                      }`}
                   >
                     <Icon className="h-5 w-5" />
                     <span className="text-sm font-medium">{section.title}</span>
@@ -841,22 +844,20 @@ export default function DocsPage() {
                   <div className="flex gap-3">
                     <button
                       onClick={() => handleFeedback(activeDoc.id, 'helpful')}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
-                        feedback[activeDoc.id] === 'helpful'
-                          ? 'bg-green-50 border-green-300 text-green-700'
-                          : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                      }`}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${feedback[activeDoc.id] === 'helpful'
+                        ? 'bg-green-50 border-green-300 text-green-700'
+                        : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                        }`}
                     >
                       <ThumbsUp className="h-4 w-4" />
                       Yes
                     </button>
                     <button
                       onClick={() => handleFeedback(activeDoc.id, 'not-helpful')}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${
-                        feedback[activeDoc.id] === 'not-helpful'
-                          ? 'bg-red-50 border-red-300 text-red-700'
-                          : 'border-gray-300 text-gray-700 hover:bg-gray-50'
-                      }`}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors ${feedback[activeDoc.id] === 'not-helpful'
+                        ? 'bg-red-50 border-red-300 text-red-700'
+                        : 'border-gray-300 text-gray-700 hover:bg-gray-50'
+                        }`}
                     >
                       <ThumbsDown className="h-4 w-4" />
                       No
@@ -871,8 +872,8 @@ export default function DocsPage() {
               </div>
             )}
           </div>
-        </div>
-      </div>
-    </div>
+        </div >
+      </div >
+    </div >
   )
 }
